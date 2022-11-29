@@ -51,8 +51,8 @@ public class BulletinService {
             @CachePut(key = "'user-id:' + #result.userId()", unless = "null == #result.userId()")
     })
     public BulletinResult create(UserInfo userInfo, @Valid BulletinCreateCommand command) {
-        BulletinMongoEntity entity = mapper.from(userInfo, command);
-        BulletinMongoEntity save = repository.save(entity);
+        var entity = mapper.from(userInfo, command);
+        var save = repository.save(entity);
         var result = mapper.from(save);
         log.info(String.valueOf(result));
         return result;
@@ -63,7 +63,7 @@ public class BulletinService {
             @CachePut(key = "'user-id:' + #result.userId()", unless = "null == #result.userId()")
     })
     public BulletinResult update(UserInfo userInfo, @NotNull @Valid BulletinUpdateCommand command) {
-        Optional<BulletinMongoEntity> optional = repository.findById(command.id());
+        var optional = repository.findById(command.id());
         BulletinMongoEntity entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         mapper.update(entity, command);
         entity = repository.save(entity);
@@ -77,8 +77,8 @@ public class BulletinService {
             @CacheEvict(key = "'user-id:' + #result.userId()")
     })
     public BulletinResult delete(UserInfo userInfo, @NotNull @Valid BulletinDeleteCommand command) {
-        Optional<BulletinMongoEntity> optional = repository.findById(command.id());
-        BulletinMongoEntity entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
+        var optional = repository.findById(command.id());
+        var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         repository.delete(entity);
         var result = mapper.from(entity);
         log.info(String.valueOf(result));

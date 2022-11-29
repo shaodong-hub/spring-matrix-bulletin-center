@@ -42,8 +42,8 @@ public class PictureService {
     }
 
     public PictureResult deletePicture(@NotNull UserInfo userInfo, @NotNull PictureDeleteCommand command) {
-        Optional<PictureEntity> optional = repository.findByIdAndUserIdAndStatus(command.id(), userInfo.userId(), PictureConstant.PICTURE_UNUSED);
-        PictureEntity entity = optional.orElseThrow(() -> new PictureNotFoundException(command.id()));
+        var optional = repository.findByIdAndUserIdAndStatus(command.id(), userInfo.userId(), PictureConstant.PICTURE_UNUSED);
+        var entity = optional.orElseThrow(() -> new PictureNotFoundException(command.id()));
         repository.delete(entity);
         return mapper.from(entity);
     }
