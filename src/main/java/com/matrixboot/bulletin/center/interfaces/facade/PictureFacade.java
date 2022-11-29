@@ -38,7 +38,6 @@ public class PictureFacade {
 
     @EventListener(BulletinCreateEvent.class)
     public void bulletinCreate(BulletinCreateEvent event) {
-
-
+        service.bulletinCreate(event);
     }
 }
