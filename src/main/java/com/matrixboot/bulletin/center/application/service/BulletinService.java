@@ -1,13 +1,13 @@
 package com.matrixboot.bulletin.center.application.service;
 
 import com.matrixboot.bulletin.center.domain.repository.IBulletinRepository;
-import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
 import com.matrixboot.bulletin.center.infrastructure.exception.BulletinNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IBulletinMapper;
+import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,6 @@ public class BulletinService {
 
     private final IBulletinRepository repository;
 
-
     public Page<BulletinResult> findCurrentBulletins(@NotNull UserInfo userInfo, Pageable pageable) {
         return repository.findAllByUserId(userInfo.userId(), pageable);
     }
@@ -48,9 +47,10 @@ public class BulletinService {
             @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
             @CachePut(key = "'user-id:' + #result.userId()", unless = "null == #result.userId()")
     })
-    public BulletinResult create(UserInfo userInfo, @Valid BulletinCreateCommand command) {
-        var entity = mapper.from(userInfo, command);
-        var savedEntity = repository.save(entity.unaudited());
+    public BulletinResult create(@Valid BulletinCreateCommand command) {
+        var bulletin = mapper.from(command);
+        var unSavedEntity = bulletin.initBulletin();
+        var savedEntity = repository.save(unSavedEntity);
         var result = mapper.from(savedEntity);
         log.info(String.valueOf(result));
         return result;
@@ -60,7 +60,7 @@ public class BulletinService {
             @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
             @CachePut(key = "'user-id:' + #result.userId()", unless = "null == #result.userId()")
     })
-    public BulletinResult update(UserInfo userInfo, @NotNull @Valid BulletinUpdateCommand command) {
+    public BulletinResult update(@NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         mapper.update(entity, command);
@@ -74,7 +74,7 @@ public class BulletinService {
             @CacheEvict(key = "'id:' + #result.id()"),
             @CacheEvict(key = "'user-id:' + #result.userId()")
     })
-    public BulletinResult delete(UserInfo userInfo, @NotNull @Valid BulletinDeleteCommand command) {
+    public BulletinResult delete(@NotNull @Valid BulletinDeleteCommand command) {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         repository.delete(entity);

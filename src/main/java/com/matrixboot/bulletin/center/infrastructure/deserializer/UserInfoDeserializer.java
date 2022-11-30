@@ -3,7 +3,7 @@ package com.matrixboot.bulletin.center.infrastructure.deserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
+import com.matrixboot.bulletin.common.core.UserInfo;
 import org.springframework.boot.jackson.JsonComponent;
 
 import javax.annotation.Resource;

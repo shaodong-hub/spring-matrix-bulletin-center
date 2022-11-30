@@ -1,14 +1,13 @@
 package com.matrixboot.bulletin.center.interfaces.facade;
 
 import com.matrixboot.bulletin.center.application.service.PictureService;
-import com.matrixboot.bulletin.center.infrastructure.annotation.AuthPrincipal;
-import com.matrixboot.bulletin.center.infrastructure.common.Result;
-import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinDeleteEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.result.PictureResult;
+import com.matrixboot.bulletin.common.Result;
+import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +34,7 @@ public class PictureManageFacade {
      * @return Result
      */
     @PostMapping("/picture")
-    public Result<PictureResult> createPicture(@AuthPrincipal UserInfo userInfo, PictureCreateCommand command) {
+    public Result<PictureResult> createPicture(UserInfo userInfo, PictureCreateCommand command) {
         return Result.success(service.createPicture(userInfo, command));
     }
 
@@ -47,7 +46,7 @@ public class PictureManageFacade {
      * @return Result
      */
     @DeleteMapping("/picture")
-    public Result<PictureResult> deletePicture(@AuthPrincipal UserInfo userInfo, PictureDeleteCommand command) {
+    public Result<PictureResult> deletePicture(UserInfo userInfo, PictureDeleteCommand command) {
         return Result.success(service.deletePicture(userInfo, command));
     }
 

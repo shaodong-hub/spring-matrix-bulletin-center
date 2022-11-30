@@ -2,8 +2,8 @@ package com.matrixboot.bulletin.center.domain.service.impl;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import com.matrixboot.bulletin.center.domain.service.IPictureHoldService;
-import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
+import com.matrixboot.bulletin.common.core.UserInfo;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 

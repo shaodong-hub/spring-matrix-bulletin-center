@@ -3,7 +3,6 @@ package com.matrixboot.bulletin.center.application.service;
 import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
 import com.matrixboot.bulletin.center.domain.service.impl.PictureOssServiceImpl;
 import com.matrixboot.bulletin.center.infrastructure.common.PictureConstant;
-import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinDeleteEvent;
@@ -11,6 +10,7 @@ import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModify
 import com.matrixboot.bulletin.center.infrastructure.common.result.PictureResult;
 import com.matrixboot.bulletin.center.infrastructure.exception.PictureNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IPictureMapper;
+import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

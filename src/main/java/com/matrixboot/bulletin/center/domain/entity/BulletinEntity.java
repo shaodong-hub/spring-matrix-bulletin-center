@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matrixboot.bulletin.center.infrastructure.annotation.AggregateRoot;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
+import com.matrixboot.bulletin.center.infrastructure.common.value.ContentValue;
+import com.matrixboot.bulletin.center.infrastructure.common.value.StatusValue;
+import com.matrixboot.bulletin.center.infrastructure.common.value.TitleValue;
+import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,8 +18,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -32,7 +38,6 @@ import java.util.List;
 
 /**
  * create in 2022/11/28 23:51
- * CompoundIndex(name = "idx_region_age", def = "{'region':1,'age':1}")
  *
  * @author shishaodong
  * @version 0.0.1
@@ -52,23 +57,27 @@ public class BulletinEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'")
-    private Long userId;
+    @Embedded
+    @AttributeOverride(name = "user_id", column = @Column(columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'"))
+    private UserIdValue userId;
 
-    @Column(columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT '标题'")
-    private String title;
+    @Embedded
+    @AttributeOverride(name = "title", column = @Column(columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT '标题'"))
+    private TitleValue title;
 
-    @Column(columnDefinition = "VARCHAR(255) DEFAULT '' COMMENT '内容'")
-    private String content;
+    @Embedded
+    @AttributeOverride(name = "content", column = @Column(columnDefinition = "VARCHAR(255) DEFAULT '' COMMENT '内容'"))
+    private ContentValue content;
+
+    @Embedded
+    @AttributeOverride(name = "status", column = @Column(columnDefinition = "TINYINT DEFAULT 0 COMMENT '状态'"))
+    private StatusValue status;
 
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '查看次数'")
     private Long view;
 
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '收藏次数'")
     private Long favorite;
-
-    @Column(columnDefinition = "TINYINT DEFAULT 0 COMMENT '状态'")
-    private Integer status;
 
     @OneToMany(mappedBy = "bulletin", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JsonManagedReference
@@ -83,9 +92,32 @@ public class BulletinEntity {
     private LocalDateTime lastModifiedDate;
 
     public BulletinEntity unaudited() {
-        this.status = 0;
+        this.status = StatusValue.unaudited();
         return this;
     }
+
+    public BulletinEntity audited() {
+        this.status = StatusValue.audited();
+        return this;
+    }
+
+    public BulletinEntity initBulletin(){
+        this.status = StatusValue.audited();
+        this.view = 0L;
+        this.favorite = 0L;
+        return this;
+    }
+
+    public BulletinEntity replaceTitle(String title){
+        this.title = new TitleValue(title);
+        return this;
+    }
+
+    public BulletinEntity replaceContent(String content){
+        this.content = new ContentValue(content);
+        return this;
+    }
+
 
     /**
      * domainEvent

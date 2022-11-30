@@ -1,8 +1,8 @@
 package com.matrixboot.bulletin.center.domain.service;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
-import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
+import com.matrixboot.bulletin.common.core.UserInfo;
 
 /**
  * create in 2022/11/30 19:27

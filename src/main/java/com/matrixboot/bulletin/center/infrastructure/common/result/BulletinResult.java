@@ -12,8 +12,7 @@ public record BulletinResult(Long id,
                              String userId,
                              String title,
                              String content,
-                             Long view,
-                             Long favorite,
+                             Integer status,
                              LocalDateTime createdDate,
                              LocalDateTime lastModifiedDate) {
 }
