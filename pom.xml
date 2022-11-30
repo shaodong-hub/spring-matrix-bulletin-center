@@ -2,32 +2,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.matrixboot.bulletin.center</groupId>
     <artifactId>spring-matrix-bulletin-center</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-matrix-bulletin-center</name>
     <description>spring-matrix-bulletin-center</description>
+
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2021.0.4</spring-cloud.version>
-        <jetbrains.version>23.0.0</jetbrains.version>
         <snakeyaml.version>1.33</snakeyaml.version>
+        <jetbrains.version>23.0.0</jetbrains.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <!-- 插件版本 -->
         <compiler.version>3.8.1</compiler.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <!-- 插件配置 -->
+        <docker.username/>
+        <docker.password/>
+        <docker.email/>
+        <docker.url/>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.matrixboot.bulletin</groupId>
             <artifactId>spring-matrix-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>5.8.10</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -47,7 +66,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,13 +82,16 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-fabric8-config</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -151,6 +173,41 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <excludeDevtools>false</excludeDevtools>
+                    <image>
+                        <!--要使用的构建器映像的名称。默认：paketobuildpacks/builder:base-->
+                        <builder>paketobuildpacks/builder:0.2.205-full</builder>
+                        <!-- 运行时 Image -->
+                        <runImage>paketobuildpacks/run:1.3.102-full-cnb</runImage>
+                        <!--映像生成的映像的名称。-->
+                        <name>shishaodong/${project.artifactId}:${project.version}</name>
+                        <!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT。默认 ALWAYS-->
+                        <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                        <!--是否需要在建立缓存前清理缓存。默认false-->
+                        <cleanCache>false</cleanCache>
+                        <!-- 启用构造器操作的详细日志记录。默认false-->
+                        <verboseLogging>true</verboseLogging>
+                        <!-- 执行完build 自动push。默认 false -->
+                        <publish>false</publish>
+                    </image>
+                    <docker>
+                        <tlsVerify>false</tlsVerify>
+                        <publishRegistry>
+                            <username>${docker.username}</username>
+                            <password>${docker.password}</password>
+                            <url>${docker.url}</url>
+                            <email>${docker.email}</email>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
+            </plugin>
+            <!-- 打包时加入当前 GIT 提交信息 -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <configuration>
+                    <offline>true</offline>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
                 </configuration>
             </plugin>
             <plugin>

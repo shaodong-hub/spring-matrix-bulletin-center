@@ -1,6 +1,7 @@
 package com.matrixboot.bulletin.center.domain.repository;
 
 import com.matrixboot.bulletin.center.domain.entity.BulletinEntity;
+import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +22,5 @@ public interface IBulletinRepository extends JpaRepository<BulletinEntity, Long>
      * @param <T>      T
      * @return Page
      */
-    <T> Page<T> findAllByUserId(long userId, Pageable pageable);
+    <T> Page<T> findAllByUserId(UserIdValue userId, Pageable pageable);
 }

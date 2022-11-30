@@ -3,7 +3,6 @@ package com.matrixboot.bulletin.center.infrastructure.mapper;
 import com.matrixboot.bulletin.center.domain.entity.BulletinEntity;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
-import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;

@@ -15,6 +15,6 @@ public class UserInfoResolveServiceImpl implements IUserInfoResolveService {
 
     @Override
     public UserInfo getUserInfoFromJwt(String jwt) {
-        return null;
+        return new UserInfo(1L);
     }
 }

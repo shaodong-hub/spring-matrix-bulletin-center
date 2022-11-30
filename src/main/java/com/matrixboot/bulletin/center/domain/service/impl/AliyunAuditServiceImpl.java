@@ -16,6 +16,8 @@ public class AliyunAuditServiceImpl implements IAuditService {
 
     @Override
     public BulletinAuditResult doAudit(BulletinEntity entity) {
+        var audited = entity.audited();
+
         return null;
     }
 

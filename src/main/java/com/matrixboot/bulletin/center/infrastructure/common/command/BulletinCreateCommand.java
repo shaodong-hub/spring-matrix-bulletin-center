@@ -10,5 +10,5 @@ import org.hibernate.validator.constraints.Length;
  * @version 0.0.1
  */
 public record BulletinCreateCommand(@Length(min = 1, max = 20) String title,
-                                    @Length(min = 1, max = 20) String content) {
+                                    @Length(min = 1, max = 200) String content) {
 }

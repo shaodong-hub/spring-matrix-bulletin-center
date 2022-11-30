@@ -5,6 +5,7 @@ import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCrea
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
+import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import com.matrixboot.bulletin.center.infrastructure.exception.BulletinNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IBulletinMapper;
 import com.matrixboot.bulletin.common.core.UserInfo;
@@ -40,7 +41,8 @@ public class BulletinService {
     private final IBulletinRepository repository;
 
     public Page<BulletinResult> findCurrentBulletins(@NotNull UserInfo userInfo, Pageable pageable) {
-        return repository.findAllByUserId(userInfo.userId(), pageable);
+        log.info("findCurrentBulletins {}", userInfo.userId());
+        return repository.findAllByUserId(new UserIdValue(userInfo.userId()), pageable);
     }
 
     @Caching(put = {

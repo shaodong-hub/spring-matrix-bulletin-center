@@ -2,6 +2,8 @@ package com.matrixboot.bulletin.center.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.matrixboot.bulletin.center.infrastructure.common.value.PictureStatusValue;
+import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,8 +15,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -49,12 +53,19 @@ public class PictureEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @Embedded
+    @AttributeOverride(name = "userId", column = @Column(name = "user_id", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'"))
+    private UserIdValue userId;
 
+    @Column(columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT 'objectKey'")
     private String objectKey;
+
+    @Column(columnDefinition = "VARCHAR(150) DEFAULT '' COMMENT 'url'")
     private String url;
 
-    private Integer status;
+    @Embedded
+    @AttributeOverride(name = "status", column = @Column(columnDefinition = "TINYINT DEFAULT 0 COMMENT '状态'"))
+    private PictureStatusValue status;
 
     @Column(name = "bulletin_id", insertable = false, updatable = false)
     private Long bulletinId;
@@ -78,7 +89,7 @@ public class PictureEntity {
     }
 
     public PictureEntity userId(long userId) {
-        this.userId = userId;
+        this.userId = new UserIdValue(userId);
         return this;
     }
 
@@ -88,12 +99,12 @@ public class PictureEntity {
     }
 
     public PictureEntity defaultStatus() {
-        this.status = PICTURE_UNUSED;
+        this.status = PictureStatusValue.unaudited();
         return this;
     }
 
     public PictureEntity inUsed() {
-        this.status = PICTURE_IN_USED;
+        this.status = PictureStatusValue.audited();
         return this;
     }
 

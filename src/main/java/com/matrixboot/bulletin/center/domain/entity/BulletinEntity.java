@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matrixboot.bulletin.center.infrastructure.annotation.AggregateRoot;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
+import com.matrixboot.bulletin.center.infrastructure.common.value.BulletinStatusValue;
 import com.matrixboot.bulletin.center.infrastructure.common.value.ContentValue;
-import com.matrixboot.bulletin.center.infrastructure.common.value.StatusValue;
 import com.matrixboot.bulletin.center.infrastructure.common.value.TitleValue;
 import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import lombok.Getter;
@@ -58,7 +58,7 @@ public class BulletinEntity {
     private Long id;
 
     @Embedded
-    @AttributeOverride(name = "user_id", column = @Column(columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'"))
+    @AttributeOverride(name = "userId", column = @Column(name = "user_id", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'"))
     private UserIdValue userId;
 
     @Embedded
@@ -71,7 +71,7 @@ public class BulletinEntity {
 
     @Embedded
     @AttributeOverride(name = "status", column = @Column(columnDefinition = "TINYINT DEFAULT 0 COMMENT '状态'"))
-    private StatusValue status;
+    private BulletinStatusValue status;
 
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '查看次数'")
     private Long view;
@@ -85,39 +85,40 @@ public class BulletinEntity {
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "created_date", columnDefinition = "DATETIME  COMMENT '创建时间'")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "last_modified_date", columnDefinition = "DATETIME COMMENT '最后更新时间'")
     private LocalDateTime lastModifiedDate;
 
     public BulletinEntity unaudited() {
-        this.status = StatusValue.unaudited();
+        this.status = BulletinStatusValue.unaudited();
         return this;
     }
 
     public BulletinEntity audited() {
-        this.status = StatusValue.audited();
+        this.status = BulletinStatusValue.audited();
         return this;
     }
 
-    public BulletinEntity initBulletin(){
-        this.status = StatusValue.audited();
+    public BulletinEntity initBulletin() {
+        this.status = BulletinStatusValue.audited();
         this.view = 0L;
         this.favorite = 0L;
         return this;
     }
 
-    public BulletinEntity replaceTitle(String title){
+    public BulletinEntity replaceTitle(String title) {
         this.title = new TitleValue(title);
         return this;
     }
 
-    public BulletinEntity replaceContent(String content){
+    public BulletinEntity replaceContent(String content) {
         this.content = new ContentValue(content);
         return this;
     }
-
 
     /**
      * domainEvent

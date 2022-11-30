@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.persistence.Embeddable;
 
 /**
- * create in 2022/11/30 20:40
+ * create in 2022/11/30 23:54
  *
  * @author shishaodong
  * @version 0.0.1
@@ -18,22 +18,22 @@ import javax.persistence.Embeddable;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatusValue {
+public class PictureStatusValue {
 
     private Integer status;
 
     @Contract(" -> new")
-    public static @NotNull StatusValue unaudited() {
-        return new StatusValue(0);
+    public static @NotNull PictureStatusValue unaudited() {
+        return new PictureStatusValue(0);
     }
 
     @Contract(" -> new")
-    public static @NotNull StatusValue audited() {
-        return new StatusValue(0);
+    public static @NotNull PictureStatusValue audited() {
+        return new PictureStatusValue(0);
     }
 
     @Contract(" -> new")
-    public static @NotNull StatusValue reject() {
-        return new StatusValue(-1);
+    public static @NotNull PictureStatusValue reject() {
+        return new PictureStatusValue(-1);
     }
 }

@@ -6,10 +6,12 @@ import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDele
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
 import com.matrixboot.bulletin.common.Result;
+import com.matrixboot.bulletin.common.annotation.AuthPrincipal;
 import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +39,7 @@ public class BulletinManageFacade {
      * @return Page
      */
     @GetMapping("current/bulletins")
-    public Result<Page<BulletinResult>> findCurrentBulletins(UserInfo userInfo, Pageable pageable) {
+    public Result<Page<BulletinResult>> findCurrentBulletins(@AuthPrincipal UserInfo userInfo, @PageableDefault Pageable pageable) {
         return Result.success(service.findCurrentBulletins(userInfo, pageable));
     }
 
