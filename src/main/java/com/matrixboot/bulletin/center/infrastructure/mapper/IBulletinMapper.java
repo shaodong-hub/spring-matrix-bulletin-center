@@ -1,13 +1,15 @@
 package com.matrixboot.bulletin.center.infrastructure.mapper;
 
 import com.matrixboot.bulletin.center.domain.entity.BulletinElasticsearchEntity;
-import com.matrixboot.bulletin.center.domain.entity.BulletinMongoEntity;
+import com.matrixboot.bulletin.center.domain.entity.BulletinEntity;
 import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
-import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinCreateEvent;
+import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
@@ -20,16 +22,45 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
  * @author shishaodong
  * @version 0.0.1
  */
-@Mapper(componentModel = SPRING, nullValuePropertyMappingStrategy = IGNORE, nullValueCheckStrategy = ALWAYS, unmappedSourcePolicy = ReportingPolicy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = SPRING,
+        nullValuePropertyMappingStrategy = IGNORE,
+        nullValueCheckStrategy = ALWAYS,
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IBulletinMapper {
 
-    BulletinMongoEntity from(UserInfo userInfo, BulletinCreateCommand command);
+    /**
+     * BulletinEntity
+     *
+     * @param userInfo UserInfo
+     * @param command  BulletinCreateCommand
+     * @return BulletinEntity
+     */
+    BulletinEntity from(UserInfo userInfo, BulletinCreateCommand command);
 
-    BulletinResult from(BulletinMongoEntity entity);
+    /**
+     * BulletinResult
+     *
+     * @param entity BulletinEntity
+     * @return BulletinResult
+     */
+    BulletinResult from(BulletinEntity entity);
 
-    void update(BulletinMongoEntity entity, BulletinUpdateCommand command);
+    /**
+     * update
+     *
+     * @param entity  BulletinEntity
+     * @param command BulletinUpdateCommand
+     */
+    @InheritConfiguration
+    void update(BulletinEntity entity, @MappingTarget BulletinUpdateCommand command);
 
-
-    BulletinElasticsearchEntity from(BulletinCreateEvent event);
+    /**
+     * BulletinElasticsearchEntity
+     *
+     * @param event BulletinModifyEvent
+     * @return BulletinElasticsearchEntity
+     */
+    BulletinElasticsearchEntity from(BulletinModifyEvent event);
 
 }

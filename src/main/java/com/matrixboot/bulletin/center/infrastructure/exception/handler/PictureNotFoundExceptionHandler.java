@@ -1,7 +1,6 @@
 package com.matrixboot.bulletin.center.infrastructure.exception.handler;
 
 import com.matrixboot.bulletin.center.infrastructure.common.Result;
-import com.matrixboot.bulletin.center.infrastructure.exception.BulletinNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.exception.PictureNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.ExceptionHandler;

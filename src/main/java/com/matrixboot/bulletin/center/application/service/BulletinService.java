@@ -1,6 +1,5 @@
 package com.matrixboot.bulletin.center.application.service;
 
-import com.matrixboot.bulletin.center.domain.entity.BulletinMongoEntity;
 import com.matrixboot.bulletin.center.domain.repository.IBulletinRepository;
 import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  * create in 2022/11/28 23:59
@@ -52,8 +50,8 @@ public class BulletinService {
     })
     public BulletinResult create(UserInfo userInfo, @Valid BulletinCreateCommand command) {
         var entity = mapper.from(userInfo, command);
-        var save = repository.save(entity);
-        var result = mapper.from(save);
+        var savedEntity = repository.save(entity.unaudited());
+        var result = mapper.from(savedEntity);
         log.info(String.valueOf(result));
         return result;
     }
@@ -64,11 +62,11 @@ public class BulletinService {
     })
     public BulletinResult update(UserInfo userInfo, @NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
-        BulletinMongoEntity entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
+        var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         mapper.update(entity, command);
-        entity = repository.save(entity);
-        var result = mapper.from(entity);
-        log.info(String.valueOf(result));
+        var savedEntity = repository.save(entity.unaudited());
+        var result = mapper.from(savedEntity);
+        log.info(String.valueOf(savedEntity));
         return result;
     }
 

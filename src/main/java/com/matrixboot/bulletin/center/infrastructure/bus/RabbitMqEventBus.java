@@ -11,4 +11,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RabbitMqEventBus implements IEventBus {
+
+    @Override
+    public void publishEvent(Object event) {
+
+    }
 }

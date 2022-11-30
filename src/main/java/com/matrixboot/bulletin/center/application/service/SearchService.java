@@ -1,7 +1,7 @@
 package com.matrixboot.bulletin.center.application.service;
 
 import com.matrixboot.bulletin.center.domain.repository.IBulletinElasticsearchRepository;
-import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinCreateEvent;
+import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.query.BulletinQuery;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IBulletinMapper;
@@ -25,10 +25,12 @@ public class SearchService {
     private final IBulletinElasticsearchRepository repository;
 
     public Page<BulletinResult> findAll(BulletinQuery query, Pageable pageable) {
+        
+
         return null;
     }
 
-    public void createBulletin(BulletinCreateEvent event) {
+    public void createBulletin(BulletinModifyEvent event) {
         var entity = mapper.from(event);
         repository.save(entity);
     }

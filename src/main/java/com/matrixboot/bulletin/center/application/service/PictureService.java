@@ -1,13 +1,13 @@
 package com.matrixboot.bulletin.center.application.service;
 
-import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
-import com.matrixboot.bulletin.center.domain.service.PictureOssService;
+import com.matrixboot.bulletin.center.domain.service.impl.PictureOssServiceImpl;
 import com.matrixboot.bulletin.center.infrastructure.common.PictureConstant;
 import com.matrixboot.bulletin.center.infrastructure.common.UserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureDeleteCommand;
-import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinCreateEvent;
+import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinDeleteEvent;
+import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.result.PictureResult;
 import com.matrixboot.bulletin.center.infrastructure.exception.PictureNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IPictureMapper;
@@ -15,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * create in 2022/11/30 00:32
@@ -31,7 +29,7 @@ public class PictureService {
 
     private final IPictureMapper mapper;
 
-    private final PictureOssService ossService;
+    private final PictureOssServiceImpl ossService;
 
     private final IPictureRepository repository;
 
@@ -48,12 +46,31 @@ public class PictureService {
         return mapper.from(entity);
     }
 
-    public void bulletinCreate(@NotNull BulletinCreateEvent event) {
-        event.pics().forEach((k, v) -> {
-            var optional = repository.findById(k);
-            var entity = optional.orElseThrow(() -> new PictureNotFoundException(k));
+    /**
+     * 发布成功以后更新图片状态
+     *
+     * @param event BulletinModifyEvent
+     */
+    public void bulletinCreate(@NotNull BulletinModifyEvent event) {
+        event.pictures().forEach(k -> {
+            var optional = repository.findById(k.getId());
+            var entity = optional.orElseThrow(() -> new PictureNotFoundException(k.getId()));
             var entityInUsed = entity.inUsed();
             repository.save(entityInUsed);
+        });
+    }
+
+    /**
+     * 删除帖子同时删除图片
+     *
+     * @param event BulletinModifyEvent
+     */
+    public void bulletinDelete(@NotNull BulletinDeleteEvent event) {
+        event.pictures().forEach(k -> {
+            var optional = repository.findById(k.getId());
+            var entity = optional.orElseThrow(() -> new PictureNotFoundException(k.getId()));
+            ossService.remove(entity);
+            repository.delete(entity);
         });
     }
 }

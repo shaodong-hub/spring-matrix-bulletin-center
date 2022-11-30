@@ -13,5 +13,5 @@ import java.util.Map;
  */
 public record BulletinCreateCommand(@Length(min = 1, max = 20) String title,
                                     @Length(min = 1, max = 20) String content,
-                                    @Size(max = 6) Map<String, String> pics) {
+                                    @Size(min = 1, max = 6) Map<String, String> pictures) {
 }

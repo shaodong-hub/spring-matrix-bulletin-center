@@ -1,6 +1,8 @@
 package com.matrixboot.bulletin.center.interfaces.facade;
 
-import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinCreateEvent;
+import com.matrixboot.bulletin.center.application.service.BulletinAuditService;
+import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
@@ -11,12 +13,14 @@ import org.springframework.stereotype.Controller;
  * @version 0.0.1
  */
 @Controller
+@RequiredArgsConstructor
 public class BulletinEventFacade {
 
+    private final BulletinAuditService auditService;
 
-    @EventListener(BulletinCreateEvent.class)
-    public void bulletinCreate(BulletinCreateEvent event) {
-
+    @EventListener(BulletinModifyEvent.class)
+    public void bulletinModify(BulletinModifyEvent event) {
+        auditService.audit(event);
     }
 
 }

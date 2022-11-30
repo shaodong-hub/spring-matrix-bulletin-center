@@ -1,16 +1,29 @@
 package com.matrixboot.bulletin.center.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 import static com.matrixboot.bulletin.center.infrastructure.common.PictureConstant.PICTURE_IN_USED;
@@ -22,27 +35,40 @@ import static com.matrixboot.bulletin.center.infrastructure.common.PictureConsta
  * @author shishaodong
  * @version 0.0.1
  */
-@Data
-@Document(collection = "picture")
+@Getter
+@Setter
+@ToString
+@Entity
+@Table(name = "picture")
+@DynamicInsert
+@DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 public class PictureEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Indexed
     private Long userId;
 
+    private String objectKey;
     private String url;
 
     private Integer status;
 
+    @Column(name = "bulletin_id", insertable = false, updatable = false)
+    private Long bulletinId;
+
+    @JoinColumn(name = "bulletin_id", referencedColumnName = "id")
+    @ManyToOne(targetEntity = BulletinEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JsonBackReference
+    private BulletinEntity bulletin;
+
     @CreatedDate
-    @Field("created_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Field("last_modified_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastModifiedDate;
 
@@ -52,22 +78,22 @@ public class PictureEntity {
     }
 
     public PictureEntity userId(long userId) {
-        this.setUserId(userId);
+        this.userId = userId;
         return this;
     }
 
     public PictureEntity url(String url) {
-        this.setUrl(url);
+        this.url = url;
         return this;
     }
 
     public PictureEntity defaultStatus() {
-        this.setStatus(PICTURE_UNUSED);
+        this.status = PICTURE_UNUSED;
         return this;
     }
 
-    public PictureEntity inUsed(){
-        this.setStatus(PICTURE_IN_USED);
+    public PictureEntity inUsed() {
+        this.status = PICTURE_IN_USED;
         return this;
     }
 

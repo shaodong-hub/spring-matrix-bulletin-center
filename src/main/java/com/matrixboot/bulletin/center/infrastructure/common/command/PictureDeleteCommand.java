@@ -7,5 +7,5 @@ package com.matrixboot.bulletin.center.infrastructure.common.command;
  * @author shishaodong
  * @version 0.0.1
  */
-public record PictureDeleteCommand(String id) {
+public record PictureDeleteCommand(Long id) {
 }

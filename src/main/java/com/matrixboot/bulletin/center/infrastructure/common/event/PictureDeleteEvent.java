@@ -6,5 +6,5 @@ package com.matrixboot.bulletin.center.infrastructure.common.event;
  * @author shishaodong
  * @version 0.0.1
  */
-public record PictureDeleteEvent(String id) {
+public record PictureDeleteEvent(Long id) {
 }

@@ -8,5 +8,5 @@ import javax.validation.constraints.NotNull;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinDeleteCommand(@NotNull String id) {
+public record BulletinDeleteCommand(@NotNull Long id) {
 }

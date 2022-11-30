@@ -11,9 +11,9 @@ import lombok.Getter;
 public class BulletinNotFoundException extends BulletinException {
 
     @Getter
-    private final String id;
+    private final Long id;
 
-    public BulletinNotFoundException(String id) {
+    public BulletinNotFoundException(Long id) {
         this.id = id;
     }
 }

@@ -1,9 +1,9 @@
 package com.matrixboot.bulletin.center.domain.repository;
 
-import com.matrixboot.bulletin.center.domain.entity.BulletinMongoEntity;
+import com.matrixboot.bulletin.center.domain.entity.BulletinEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * create in 2022/11/29 00:00
@@ -11,7 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IBulletinRepository extends PagingAndSortingRepository<BulletinMongoEntity, String> {
+public interface IBulletinRepository extends JpaRepository<BulletinEntity, Long> {
 
     /**
      * findAllByUserId

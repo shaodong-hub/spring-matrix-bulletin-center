@@ -1,7 +1,7 @@
 package com.matrixboot.bulletin.center.domain.repository;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IPictureRepository extends PagingAndSortingRepository<PictureEntity, String> {
+public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
 
     /**
      * deleteAllByCreatedDateBeforeAndStatusIs
@@ -23,10 +23,14 @@ public interface IPictureRepository extends PagingAndSortingRepository<PictureEn
      */
     long deleteAllByCreatedDateBeforeAndStatusIs(LocalDateTime createdDate, int status);
 
-    int deleteByUserIdAndStatus(int userId, int status);
-
-    Optional<PictureEntity> findByUserIdAndStatus(long userId, int status);
-
-    Optional<PictureEntity> findByIdAndUserIdAndStatus(String id, long userId, int status);
+    /**
+     * findByIdAndUserIdAndStatus
+     *
+     * @param id     id
+     * @param userId userId
+     * @param status status
+     * @return Optional
+     */
+    Optional<PictureEntity> findByIdAndUserIdAndStatus(long id, long userId, int status);
 
 }

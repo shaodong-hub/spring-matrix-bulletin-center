@@ -8,7 +8,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.annotation.Resource;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author shishaodong
  * @version 0.0.1
  */
-@WebMvcTest(BulletinFacade.class)
+@WebMvcTest(BulletinManageFacade.class)
 @AutoConfigureRestDocs
 class BulletinFacadeTest {
 
