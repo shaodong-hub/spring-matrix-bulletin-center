@@ -30,9 +30,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-import static com.matrixboot.bulletin.center.infrastructure.common.PictureConstant.PICTURE_IN_USED;
-import static com.matrixboot.bulletin.center.infrastructure.common.PictureConstant.PICTURE_UNUSED;
-
 /**
  * create in 2022/11/30 00:20
  *

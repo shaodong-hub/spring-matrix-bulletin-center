@@ -1,7 +1,6 @@
 package com.matrixboot.bulletin.center.interfaces.facade;
 
 import cn.hutool.core.io.IoUtil;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -11,8 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.annotation.Resource;
-
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
