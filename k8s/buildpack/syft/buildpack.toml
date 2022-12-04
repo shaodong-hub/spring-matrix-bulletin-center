@@ -39,7 +39,7 @@ purl = "pkg:generic/anchore-syft@0.62.3"
 sha256 = "80cea6e686c00c3e7b591bfa83a6e2364936400e93bd6413d26f0a58f3bf7782"
 stacks = ["io.buildpacks.stacks.bionic", "io.paketo.stacks.tiny", "*"]
 #uri = "https://github.com/anchore/syft/releases/download/v0.62.3/syft_0.62.3_linux_amd64.tar.gz"
-uri = "https://180.76.103.11/anchore/syft/releases/download/v0.62.3/syft_0.62.3_linux_amd64.tar.gz"
+uri = "http://180.76.103.11/anchore/syft/releases/download/v0.62.3/syft_0.62.3_linux_amd64.tar.gz"
 version = "0.62.3"
 
 [[metadata.dependencies.licenses]]
