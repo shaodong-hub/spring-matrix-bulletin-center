@@ -194,6 +194,18 @@
                         <verboseLogging>true</verboseLogging>
                         <!-- 执行完build 自动push。默认 false -->
                         <publish>false</publish>
+                        <!-- mvn clean spring-boot:build-image -Dproject.path=/绝对路径/spring-boot-examples -f pom.xml -->
+                        <bindings>
+                            <binding>
+                                ${project.basedir}/${project.artifactId}/buildpack/bellsoft-liberica/buildpack.toml:/cnb/buildpacks/paketo-buildpacks_bellsoft-liberica/9.2.0/buildpack.toml
+                            </binding>
+                            <binding>
+                                ${project.basedir}/${project.artifactId}/buildpack/spring-boot/buildpack.toml:/cnb/buildpacks/paketo-buildpacks_spring-boot/5.8.0/buildpack.toml
+                            </binding>
+                            <binding>
+                                ${project.basedir}/${project.artifactId}/buildpack/syft/buildpack.toml:/cnb/buildpacks/paketo-buildpacks_syft/1.10.0/buildpack.toml
+                            </binding>
+                        </bindings>
                     </image>
                     <docker>
                         <tlsVerify>false</tlsVerify>
