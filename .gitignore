@@ -33,4 +33,3 @@ build/
 .vscode/
 /src/main/resources/application-dev.properties
 /k8s/kube-configmap.yaml
-/src/main/resources/bootstrap.properties

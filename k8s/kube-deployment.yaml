@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: matrix
+  name: matrix-kube
+  labels:
+    app: matrix-kube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-kube
+  template:
+    metadata:
+      name: matrix-kube
+      labels:
+        app: matrix-kube
+    spec:
+      serviceAccountName: matrix-kube-service-account
+      restartPolicy: Always
+      containers:
+        - name: matrix-kube
+          image: shishaodong/matrix-kube:0.0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1000Mi
+            requests:
+              cpu: 2000m
+              memory: 1000Mi
+          readinessProbe:
+            httpGet:
+              port: 2022
+              path: /actuator/health/readiness
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              port: 2022
+              path: /actuator/health/liveness
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 3
