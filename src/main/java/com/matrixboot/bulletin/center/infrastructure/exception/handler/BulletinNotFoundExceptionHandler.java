@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class BulletinNotFoundExceptionHandler {
 
     @ExceptionHandler(BulletinNotFoundException.class)
-    public Result<String> bulletinNotFoundException(@NotNull BulletinNotFoundException exception){
+    public Result<String> bulletinNotFoundException(@NotNull BulletinNotFoundException exception) {
         return Result.failure(exception.getMessage());
     }
 

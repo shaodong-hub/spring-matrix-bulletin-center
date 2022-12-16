@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static com.matrixboot.bulletin.center.infrastructure.common.PictureConstant.PICTURE_UNUSED;
+import static com.matrixboot.bulletin.center.infrastructure.common.PictureConstant.PICTURE_DISCARDED;
 
 /**
  * create in 2022/11/30 00:22
@@ -26,7 +26,7 @@ public class PictureExpireTask {
     @Scheduled(fixedRate = 3600)
     public void task() {
         var yesterday = LocalDateTime.now().minusDays(1L);
-        long count = repository.deleteAllByCreatedDateBeforeAndStatusIs(yesterday, PICTURE_UNUSED);
+        long count = repository.deleteAllByCreatedDateBeforeAndStatusIs(yesterday, PICTURE_DISCARDED);
         log.info("{}", count);
     }
 

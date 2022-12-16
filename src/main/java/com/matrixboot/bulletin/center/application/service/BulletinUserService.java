@@ -1,11 +1,10 @@
 package com.matrixboot.bulletin.center.application.service;
 
-import com.matrixboot.bulletin.center.domain.repository.IBulletinRepository;
+import com.matrixboot.bulletin.center.domain.repository.IBulletinInfoRepository;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
-import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import com.matrixboot.bulletin.center.infrastructure.exception.BulletinNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IBulletinMapper;
 import com.matrixboot.bulletin.common.core.UserInfo;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,22 +33,26 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Service
 @Validated
-@CacheConfig(cacheNames = "bulletin")
-public class BulletinService {
+@CacheConfig(cacheNames = "manage")
+public class BulletinUserService {
 
     private final IBulletinMapper mapper;
 
-    private final IBulletinRepository repository;
+    private final IBulletinInfoRepository repository;
 
+    @Cacheable(key = "'bulletins-user:' + #userInfo.userId()")
     public Page<BulletinResult> findCurrentBulletins(@NotNull UserInfo userInfo, Pageable pageable) {
         log.info("findCurrentBulletins {}", userInfo.userId());
-        return repository.findAllByUserId(new UserIdValue(userInfo.userId()), pageable);
+        return repository.findAllByCreatedBy(userInfo.userId(), pageable);
     }
 
-    @Caching(put = {
-            @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
-            @CachePut(key = "'user-id:' + #result.userId()", unless = "null == #result.userId()")
-    })
+    @Caching(
+            put = {
+                    @CachePut(key = "'id-bulletin:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'id-user:'     + #result.userId()", unless = "null == #result.userId()")
+            },
+            evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
+    )
     public BulletinResult create(@Valid BulletinCreateCommand command) {
         var bulletin = mapper.from(command);
         var unSavedEntity = bulletin.initBulletin();
@@ -58,10 +62,13 @@ public class BulletinService {
         return result;
     }
 
-    @Caching(put = {
-            @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
-            @CachePut(key = "'user-id:' + #result.userId()", unless = "null == #result.userId()")
-    })
+    @Caching(
+            put = {
+                    @CachePut(key = "'id-bulletin:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'id-user:'     + #result.userId()", unless = "null == #result.userId()")
+            },
+            evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
+    )
     public BulletinResult update(@NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
@@ -73,8 +80,9 @@ public class BulletinService {
     }
 
     @Caching(evict = {
-            @CacheEvict(key = "'id:' + #result.id()"),
-            @CacheEvict(key = "'user-id:' + #result.userId()")
+            @CacheEvict(key = "'id-bulletin:'  + #result.id()"),
+            @CacheEvict(key = "'id-user:'      + #result.userId()"),
+            @CacheEvict(key = "'id:bulletins:' + #result.id()"),
     })
     public BulletinResult delete(@NotNull @Valid BulletinDeleteCommand command) {
         var optional = repository.findById(command.id());

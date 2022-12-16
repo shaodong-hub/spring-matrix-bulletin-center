@@ -1,7 +1,7 @@
 package com.matrixboot.bulletin.center.infrastructure.common.event;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
-import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -11,5 +11,10 @@ import java.util.List;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinModifyEvent(Long id, UserIdValue userId, List<PictureEntity> pictures) {
+public record BulletinModifyEvent(Long id, Long createdBy, List<PictureEntity> pictures) {
+
+
+    public boolean isNotEmpty() {
+        return !CollectionUtils.isEmpty(pictures());
+    }
 }

@@ -12,7 +12,19 @@ import com.matrixboot.bulletin.common.core.UserInfo;
  */
 public interface IPictureHoldService {
 
+    /**
+     * preserve
+     *
+     * @param userInfo UserInfo
+     * @param command  PictureCreateCommand
+     * @return PictureEntity
+     */
     PictureEntity preserve(UserInfo userInfo, PictureCreateCommand command);
 
+    /**
+     * remove picture
+     *
+     * @param entity PictureEntity
+     */
     void remove(PictureEntity entity);
 }

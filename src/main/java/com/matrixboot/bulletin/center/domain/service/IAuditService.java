@@ -1,6 +1,6 @@
 package com.matrixboot.bulletin.center.domain.service;
 
-import com.matrixboot.bulletin.center.domain.entity.BulletinEntity;
+import com.matrixboot.bulletin.center.domain.entity.BulletinInfoEntity;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinAuditResult;
 
 /**
@@ -11,6 +11,12 @@ import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinAudit
  */
 public interface IAuditService {
 
-    BulletinAuditResult doAudit(BulletinEntity entity);
+    /**
+     * 执行数据审计
+     *
+     * @param entity BulletinInfoEntity
+     * @return BulletinAuditResult
+     */
+    BulletinAuditResult doAudit(BulletinInfoEntity entity);
 
 }

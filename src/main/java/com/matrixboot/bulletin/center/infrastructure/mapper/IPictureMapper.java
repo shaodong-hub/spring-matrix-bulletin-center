@@ -18,5 +18,11 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 @Mapper(componentModel = SPRING, nullValuePropertyMappingStrategy = IGNORE, nullValueCheckStrategy = ALWAYS, unmappedSourcePolicy = ReportingPolicy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IPictureMapper {
 
+    /**
+     * from
+     *
+     * @param entity PictureEntity
+     * @return PictureResult
+     */
     PictureResult from(PictureEntity entity);
 }

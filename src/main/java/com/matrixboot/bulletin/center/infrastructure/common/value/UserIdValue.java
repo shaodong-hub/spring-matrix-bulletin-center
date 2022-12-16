@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * create in 2022/11/30 20:53
@@ -16,7 +18,10 @@ import javax.persistence.Embeddable;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserIdValue {
+public class UserIdValue implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 3196605270913350489L;
 
     private Long userId;
 }

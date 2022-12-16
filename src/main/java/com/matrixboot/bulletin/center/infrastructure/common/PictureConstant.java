@@ -12,8 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PictureConstant {
 
-    public static final int PICTURE_UNUSED = 0;
+    public static final int PICTURE_IN_REVIEW = 0;
 
-    public static final int PICTURE_IN_USED = 1;
+    public static final int PICTURE_ACCEPTED = 1;
+
+    public static final int PICTURE_REJECTED = -1;
+
+    public static final int PICTURE_DISCARDED = -2;
+
+    public static final int PICTURE_IN_USED = 2;
 
 }

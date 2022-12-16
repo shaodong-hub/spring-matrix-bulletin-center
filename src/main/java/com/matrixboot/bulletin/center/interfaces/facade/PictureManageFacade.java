@@ -10,9 +10,12 @@ import com.matrixboot.bulletin.common.Result;
 import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.transaction.event.TransactionPhase.BEFORE_COMMIT;
 
 /**
  * create in 2022/11/30 00:46
@@ -55,7 +58,7 @@ public class PictureManageFacade {
      *
      * @param event BulletinModifyEvent
      */
-    @EventListener(BulletinModifyEvent.class)
+    @TransactionalEventListener(value = BulletinModifyEvent.class, condition = "#event.isNotEmpty()", phase = BEFORE_COMMIT)
     public void bulletinCreate(BulletinModifyEvent event) {
         service.bulletinCreate(event);
     }

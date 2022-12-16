@@ -1,7 +1,7 @@
-spring.application.name=spring-boot-kube
+spring.application.name=bulletin-center
 spring.main.cloud-platform=kubernetes
 spring.cloud.kubernetes.config.enable-api=true
-spring.cloud.kubernetes.config.name=matrix-kube-configmap
+spring.cloud.kubernetes.config.name=bulletin-center-configmap
 spring.cloud.kubernetes.config.namespace=matrix
 spring.cloud.kubernetes.reload.enabled=true
 spring.cloud.kubernetes.reload.mode=event

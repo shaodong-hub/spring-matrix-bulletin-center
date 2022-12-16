@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class PictureNotFoundExceptionHandler {
 
     @ExceptionHandler(PictureNotFoundException.class)
-    public Result<String> bulletinNotFoundException(@NotNull PictureNotFoundException exception){
+    public Result<String> bulletinNotFoundException(@NotNull PictureNotFoundException exception) {
         return Result.failure(exception.getMessage());
     }
 

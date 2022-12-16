@@ -1,5 +1,6 @@
 package com.matrixboot.bulletin.center.infrastructure.common.result;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -14,5 +15,5 @@ public record BulletinResult(Long id,
                              String content,
                              Integer status,
                              LocalDateTime createdDate,
-                             LocalDateTime lastModifiedDate) {
+                             LocalDateTime lastModifiedDate) implements Serializable {
 }

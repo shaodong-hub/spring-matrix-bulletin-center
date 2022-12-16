@@ -31,6 +31,7 @@ public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
      * @param status status
      * @return Optional
      */
-    Optional<PictureEntity> findByIdAndUserIdAndStatus(long id, long userId, int status);
+    Optional<PictureEntity> findByIdAndCreatedByAndStatus(long id, long userId, int status);
+
 
 }

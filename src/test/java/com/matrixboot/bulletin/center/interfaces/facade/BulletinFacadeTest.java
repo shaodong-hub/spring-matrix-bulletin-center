@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author shishaodong
  * @version 0.0.1
  */
-@WebMvcTest(BulletinManageFacade.class)
+@WebMvcTest(BulletinUserFacade.class)
 @AutoConfigureRestDocs
 class BulletinFacadeTest {
 

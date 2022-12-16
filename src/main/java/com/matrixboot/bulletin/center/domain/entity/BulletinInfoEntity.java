@@ -7,13 +7,14 @@ import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModify
 import com.matrixboot.bulletin.center.infrastructure.common.value.BulletinStatusValue;
 import com.matrixboot.bulletin.center.infrastructure.common.value.ContentValue;
 import com.matrixboot.bulletin.center.infrastructure.common.value.TitleValue;
-import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -30,6 +31,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,15 +55,14 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class BulletinEntity {
+public class BulletinInfoEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3504012983951639554L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Embedded
-    @AttributeOverride(name = "userId", column = @Column(name = "user_id", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'"))
-    private UserIdValue userId;
 
     @Embedded
     @AttributeOverride(name = "title", column = @Column(columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT '标题'"))
@@ -73,15 +76,17 @@ public class BulletinEntity {
     @AttributeOverride(name = "status", column = @Column(columnDefinition = "TINYINT DEFAULT 0 COMMENT '状态'"))
     private BulletinStatusValue status;
 
-    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '查看次数'")
-    private Long view;
-
-    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '收藏次数'")
-    private Long favorite;
-
-    @OneToMany(mappedBy = "bulletin", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @OneToMany(mappedBy = "bulletin", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PictureEntity> pictures;
+
+    @CreatedBy
+    @Column(name = "created_by", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'")
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(name = "last_modified_by", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'")
+    private Long lastModifiedBy;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -93,29 +98,30 @@ public class BulletinEntity {
     @Column(name = "last_modified_date", columnDefinition = "DATETIME COMMENT '最后更新时间'")
     private LocalDateTime lastModifiedDate;
 
-    public BulletinEntity unaudited() {
+    @Version
+    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '乐观锁'")
+    private Long version;
+
+    public BulletinInfoEntity unaudited() {
         this.status = BulletinStatusValue.unaudited();
         return this;
     }
 
-    public BulletinEntity audited() {
+    public BulletinInfoEntity audited() {
         this.status = BulletinStatusValue.audited();
         return this;
     }
 
-    public BulletinEntity initBulletin() {
-        this.status = BulletinStatusValue.audited();
-        this.view = 0L;
-        this.favorite = 0L;
+    public BulletinInfoEntity initBulletin() {
         return this;
     }
 
-    public BulletinEntity replaceTitle(String title) {
+    public BulletinInfoEntity replaceTitle(String title) {
         this.title = new TitleValue(title);
         return this;
     }
 
-    public BulletinEntity replaceContent(String content) {
+    public BulletinInfoEntity replaceContent(String content) {
         this.content = new ContentValue(content);
         return this;
     }
@@ -131,7 +137,7 @@ public class BulletinEntity {
         return Collections.singletonList(
                 new BulletinModifyEvent(
                         this.getId(),
-                        this.getUserId(),
+                        this.getCreatedBy(),
                         this.pictures
                 )
         );

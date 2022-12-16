@@ -1,6 +1,6 @@
 package com.matrixboot.bulletin.center.interfaces.facade;
 
-import com.matrixboot.bulletin.center.application.service.BulletinService;
+import com.matrixboot.bulletin.center.application.service.BulletinUserService;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-public class BulletinManageFacade {
+public class BulletinUserFacade {
 
-    private final BulletinService service;
+    private final BulletinUserService service;
 
     /**
      * 当前用户所有的帖子
@@ -38,7 +38,7 @@ public class BulletinManageFacade {
      * @param pageable Pageable
      * @return Page
      */
-    @GetMapping("current/bulletins")
+    @GetMapping("/current/bulletins")
     public Result<Page<BulletinResult>> findCurrentBulletins(@AuthPrincipal UserInfo userInfo, @PageableDefault Pageable pageable) {
         return Result.success(service.findCurrentBulletins(userInfo, pageable));
     }
@@ -49,7 +49,7 @@ public class BulletinManageFacade {
      * @param command BulletinCreateCommand
      * @return BulletinResult
      */
-    @PostMapping("bulletin")
+    @PostMapping("/bulletin")
     public Result<BulletinResult> create(@RequestBody BulletinCreateCommand command) {
         return Result.success(service.create(command));
     }
@@ -60,7 +60,7 @@ public class BulletinManageFacade {
      * @param command BulletinUpdateCommand
      * @return BulletinResult
      */
-    @PutMapping("bulletin")
+    @PutMapping("/bulletin")
     public Result<BulletinResult> update(@RequestBody BulletinUpdateCommand command) {
         return Result.success(service.update(command));
     }
@@ -71,7 +71,7 @@ public class BulletinManageFacade {
      * @param command BulletinDeleteCommand
      * @return BulletinResult
      */
-    @DeleteMapping("bulletin")
+    @DeleteMapping("/bulletin")
     public Result<BulletinResult> delete(@RequestBody BulletinDeleteCommand command) {
         return Result.success(service.delete(command));
     }

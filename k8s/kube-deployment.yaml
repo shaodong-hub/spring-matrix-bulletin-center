@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: matrix
-  name: matrix-kube
+  name: bulletin-center
   labels:
-    app: matrix-kube
+    app: bulletin-center
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: matrix-kube
+      app: bulletin-center
   template:
     metadata:
-      name: matrix-kube
+      name: bulletin-center
       labels:
-        app: matrix-kube
+        app: bulletin-center
     spec:
-      serviceAccountName: matrix-kube-service-account
+      serviceAccountName: bulletin-center-service-account
       restartPolicy: Always
       containers:
-        - name: matrix-kube
-          image: shishaodong/matrix-kube:0.0.1-SNAPSHOT
+        - name: bulletin-center
+          image: registry-vpc.cn-hangzhou.aliyuncs.com/shishaodong/spring-matrix-bulletin-center:0.0.1-SNAPSHOT
           imagePullPolicy: IfNotPresent
           resources:
             limits:

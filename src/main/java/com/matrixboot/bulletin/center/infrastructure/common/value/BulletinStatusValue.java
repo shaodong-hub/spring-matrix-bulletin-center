@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Embeddable;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * create in 2022/11/30 20:40
@@ -18,7 +20,10 @@ import javax.persistence.Embeddable;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class BulletinStatusValue {
+public class BulletinStatusValue implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2229351581669919674L;
 
     private Integer status;
 
@@ -29,7 +34,7 @@ public class BulletinStatusValue {
 
     @Contract(" -> new")
     public static @NotNull BulletinStatusValue audited() {
-        return new BulletinStatusValue(0);
+        return new BulletinStatusValue(1);
     }
 
     @Contract(" -> new")

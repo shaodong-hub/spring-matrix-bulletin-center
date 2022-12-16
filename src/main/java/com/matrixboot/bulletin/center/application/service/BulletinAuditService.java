@@ -1,6 +1,6 @@
 package com.matrixboot.bulletin.center.application.service;
 
-import com.matrixboot.bulletin.center.domain.repository.IBulletinRepository;
+import com.matrixboot.bulletin.center.domain.repository.IBulletinInfoRepository;
 import com.matrixboot.bulletin.center.domain.service.IAuditService;
 import com.matrixboot.bulletin.center.domain.service.IEventBus;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
@@ -23,7 +23,7 @@ public class BulletinAuditService {
 
     private final IAuditService auditService;
 
-    private final IBulletinRepository bulletinRepository;
+    private final IBulletinInfoRepository bulletinRepository;
 
     private final IEventBus eventBus;
 

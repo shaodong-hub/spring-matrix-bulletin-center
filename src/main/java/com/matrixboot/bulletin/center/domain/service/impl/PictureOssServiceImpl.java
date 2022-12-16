@@ -18,7 +18,7 @@ public class PictureOssServiceImpl implements IPictureHoldService {
 
     @Override
     public PictureEntity preserve(@NotNull UserInfo userInfo, PictureCreateCommand command) {
-        return PictureEntity.defaultPicture().userId(userInfo.userId());
+        return PictureEntity.defaultPicture();
     }
 
     @Override

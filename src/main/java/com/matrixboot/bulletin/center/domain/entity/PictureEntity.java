@@ -3,7 +3,6 @@ package com.matrixboot.bulletin.center.domain.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.matrixboot.bulletin.center.infrastructure.common.value.PictureStatusValue;
-import com.matrixboot.bulletin.center.infrastructure.common.value.UserIdValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +10,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -28,6 +29,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -44,15 +47,14 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class PictureEntity {
+public class PictureEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2330355043156162676L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Embedded
-    @AttributeOverride(name = "userId", column = @Column(name = "user_id", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'"))
-    private UserIdValue userId;
 
     @Column(columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT 'objectKey'")
     private String objectKey;
@@ -68,26 +70,31 @@ public class PictureEntity {
     private Long bulletinId;
 
     @JoinColumn(name = "bulletin_id", referencedColumnName = "id")
-    @ManyToOne(targetEntity = BulletinEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = BulletinInfoEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JsonBackReference
-    private BulletinEntity bulletin;
+    private BulletinInfoEntity bulletin;
+
+    @CreatedBy
+    @Column(name = "created_by", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'")
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(name = "last_modified_by", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'")
+    private Long lastModifiedBy;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "created_date", columnDefinition = "DATETIME  COMMENT '创建时间'")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "last_modified_date", columnDefinition = "DATETIME COMMENT '最后更新时间'")
     private LocalDateTime lastModifiedDate;
 
     @Contract(" -> new")
     public static @NotNull PictureEntity defaultPicture() {
         return new PictureEntity();
-    }
-
-    public PictureEntity userId(long userId) {
-        this.userId = new UserIdValue(userId);
-        return this;
     }
 
     public PictureEntity url(String url) {
@@ -96,13 +103,12 @@ public class PictureEntity {
     }
 
     public PictureEntity defaultStatus() {
-        this.status = PictureStatusValue.unaudited();
+        this.status = PictureStatusValue.inReview();
         return this;
     }
 
     public PictureEntity inUsed() {
-        this.status = PictureStatusValue.audited();
+        this.status = PictureStatusValue.inUsed();
         return this;
     }
-
 }
