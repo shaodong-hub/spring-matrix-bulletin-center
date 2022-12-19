@@ -1,5 +1,6 @@
 package com.matrixboot.bulletin.center.domain.entity;
 
+import cn.hutool.core.collection.CollUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matrixboot.bulletin.center.infrastructure.annotation.AggregateRoot;
@@ -37,7 +38,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -78,7 +80,7 @@ public class BulletinInfoEntity implements Serializable {
 
     @OneToMany(mappedBy = "bulletin", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<PictureEntity> pictures;
+    private Set<PictureEntity> pictures;
 
     @CreatedBy
     @Column(name = "created_by", columnDefinition = "BIGINT NOT NULL COMMENT '用户 id'")
@@ -101,6 +103,13 @@ public class BulletinInfoEntity implements Serializable {
     @Version
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '乐观锁'")
     private Long version;
+
+    public void addPictures(Set<PictureEntity> pictures) {
+        if (CollUtil.isEmpty(this.pictures)) {
+            this.pictures = new HashSet<>();
+        }
+        this.pictures.addAll(pictures);
+    }
 
     public BulletinInfoEntity unaudited() {
         this.status = BulletinStatusValue.unaudited();

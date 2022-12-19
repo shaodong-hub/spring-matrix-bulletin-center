@@ -3,7 +3,6 @@ package com.matrixboot.bulletin.center.application.task;
 import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public class PictureExpireTask {
 
     private final IPictureRepository repository;
 
-    @Scheduled(fixedRate = 3600)
+//    @Scheduled(fixedRate = 3600)
     public void task() {
         var yesterday = LocalDateTime.now().minusDays(1L);
         long count = repository.deleteAllByCreatedDateBeforeAndStatusIs(yesterday, PICTURE_DISCARDED);

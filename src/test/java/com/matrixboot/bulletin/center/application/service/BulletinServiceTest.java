@@ -2,6 +2,7 @@ package com.matrixboot.bulletin.center.application.service;
 
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.common.core.UserInfo;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ import javax.annotation.Resource;
  */
 @ActiveProfiles("junit")
 @SpringBootTest
-@Sql("classpath:db/bulletin.sql")
-@Rollback
+@Sql({"classpath:db/bulletin.sql", "classpath:db/picture.sql"})
+@Rollback(value = false)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BulletinServiceTest {
@@ -40,7 +41,7 @@ class BulletinServiceTest {
 
     @Test
     void create() {
-        var result = bulletinService.create(new BulletinCreateCommand("junit_title", "junit_content"));
+        var result = bulletinService.create(new BulletinCreateCommand("junit_title", "junit_content", Sets.set(1L, 2L, 3L)));
         Assertions.assertEquals("junit_title", result.title());
         Assertions.assertEquals("junit_content", result.content());
     }

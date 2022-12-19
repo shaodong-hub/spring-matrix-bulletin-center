@@ -3,7 +3,7 @@ package com.matrixboot.bulletin.center.infrastructure.common.event;
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * create in 2022/11/29 23:31
@@ -11,7 +11,7 @@ import java.util.List;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinModifyEvent(Long id, Long createdBy, List<PictureEntity> pictures) {
+public record BulletinModifyEvent(Long id, Long createdBy, Set<PictureEntity> pictures) {
 
 
     public boolean isNotEmpty() {

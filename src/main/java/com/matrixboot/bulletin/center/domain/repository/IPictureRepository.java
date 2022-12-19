@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * create in 2022/11/30 00:26
@@ -33,5 +34,6 @@ public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
      */
     Optional<PictureEntity> findByIdAndCreatedByAndStatus(long id, long userId, int status);
 
+    Set<PictureEntity> findAllByIdIn(Set<Long> ids);
 
 }

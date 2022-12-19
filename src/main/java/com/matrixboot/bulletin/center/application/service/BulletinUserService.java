@@ -1,6 +1,8 @@
 package com.matrixboot.bulletin.center.application.service;
 
+import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import com.matrixboot.bulletin.center.domain.repository.IBulletinInfoRepository;
+import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
@@ -19,9 +21,11 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 /**
  * create in 2022/11/28 23:59
@@ -40,6 +44,8 @@ public class BulletinUserService {
 
     private final IBulletinInfoRepository repository;
 
+    private final IPictureRepository pictureRepository;
+
     @Cacheable(key = "'bulletins-user:' + #userInfo.userId()")
     public Page<BulletinResult> findCurrentBulletins(@NotNull UserInfo userInfo, Pageable pageable) {
         log.info("findCurrentBulletins {}", userInfo.userId());
@@ -53,9 +59,12 @@ public class BulletinUserService {
             },
             evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
     )
+    @Transactional(rollbackFor = Exception.class)
     public BulletinResult create(@Valid BulletinCreateCommand command) {
         var bulletin = mapper.from(command);
         var unSavedEntity = bulletin.initBulletin();
+        Set<PictureEntity> results = pictureRepository.findAllByIdIn(command.pictureIds());
+        unSavedEntity.addPictures(results);
         var savedEntity = repository.save(unSavedEntity);
         var result = mapper.from(savedEntity);
         log.info(String.valueOf(result));
@@ -69,6 +78,7 @@ public class BulletinUserService {
             },
             evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
     )
+    @Transactional(rollbackFor = Exception.class)
     public BulletinResult update(@NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
@@ -84,6 +94,7 @@ public class BulletinUserService {
             @CacheEvict(key = "'id-user:'      + #result.userId()"),
             @CacheEvict(key = "'id:bulletins:' + #result.id()"),
     })
+    @Transactional(rollbackFor = Exception.class)
     public BulletinResult delete(@NotNull @Valid BulletinDeleteCommand command) {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));

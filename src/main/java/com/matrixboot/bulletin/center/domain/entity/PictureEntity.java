@@ -3,6 +3,7 @@ package com.matrixboot.bulletin.center.domain.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.matrixboot.bulletin.center.infrastructure.common.value.PictureStatusValue;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -47,6 +48,7 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(of = "id")
 public class PictureEntity implements Serializable {
 
     @Serial
@@ -56,7 +58,7 @@ public class PictureEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT 'objectKey'")
+    @Column(name = "object_key", columnDefinition = "VARCHAR(50) DEFAULT '' COMMENT 'objectKey'")
     private String objectKey;
 
     @Column(columnDefinition = "VARCHAR(150) DEFAULT '' COMMENT 'url'")
@@ -70,8 +72,9 @@ public class PictureEntity implements Serializable {
     private Long bulletinId;
 
     @JoinColumn(name = "bulletin_id", referencedColumnName = "id")
-    @ManyToOne(targetEntity = BulletinInfoEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = BulletinInfoEntity.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
+    @ToString.Exclude
     private BulletinInfoEntity bulletin;
 
     @CreatedBy
@@ -111,4 +114,6 @@ public class PictureEntity implements Serializable {
         this.status = PictureStatusValue.inUsed();
         return this;
     }
+
+
 }

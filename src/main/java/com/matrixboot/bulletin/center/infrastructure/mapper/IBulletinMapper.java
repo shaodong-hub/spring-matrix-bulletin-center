@@ -76,5 +76,10 @@ public interface IBulletinMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "title", expression = "java(new TitleValue(command.title()))")
     @Mapping(target = "content", expression = "java(new ContentValue(command.content()))")
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
     void update(@MappingTarget BulletinInfoEntity entity, BulletinUpdateCommand command);
 }
