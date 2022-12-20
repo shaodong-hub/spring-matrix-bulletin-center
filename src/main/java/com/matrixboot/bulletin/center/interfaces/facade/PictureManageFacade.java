@@ -4,18 +4,14 @@ import com.matrixboot.bulletin.center.application.service.PictureService;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinDeleteEvent;
-import com.matrixboot.bulletin.center.infrastructure.common.event.BulletinModifyEvent;
 import com.matrixboot.bulletin.center.infrastructure.common.result.PictureResult;
 import com.matrixboot.bulletin.common.Result;
 import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.springframework.transaction.event.TransactionPhase.BEFORE_COMMIT;
 
 /**
  * create in 2022/11/30 00:46
@@ -51,16 +47,6 @@ public class PictureManageFacade {
     @DeleteMapping("/picture")
     public Result<PictureResult> deletePicture(UserInfo userInfo, PictureDeleteCommand command) {
         return Result.success(service.deletePicture(userInfo, command));
-    }
-
-    /**
-     * 帖子更新事件
-     *
-     * @param event BulletinModifyEvent
-     */
-    @TransactionalEventListener(value = BulletinModifyEvent.class, condition = "#event.isNotEmpty()", phase = BEFORE_COMMIT)
-    public void bulletinCreate(BulletinModifyEvent event) {
-        service.bulletinCreate(event);
     }
 
     /**

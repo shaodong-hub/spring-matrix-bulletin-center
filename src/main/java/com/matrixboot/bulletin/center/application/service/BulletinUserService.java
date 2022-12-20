@@ -55,7 +55,7 @@ public class BulletinUserService {
     @Caching(
             put = {
                     @CachePut(key = "'id-bulletin:' + #result.id()", unless = "null == #result.id()"),
-                    @CachePut(key = "'id-user:'     + #result.userId()", unless = "null == #result.userId()")
+                    @CachePut(key = "'id-user:' + #result.userId()", unless = "null == #result.userId()")
             },
             evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
     )
@@ -64,7 +64,7 @@ public class BulletinUserService {
         var bulletin = mapper.from(command);
         var unSavedEntity = bulletin.initBulletin();
         Set<PictureEntity> results = pictureRepository.findAllByIdIn(command.pictureIds());
-        unSavedEntity.addPictures(results);
+        unSavedEntity.replacePictures(results);
         var savedEntity = repository.save(unSavedEntity);
         var result = mapper.from(savedEntity);
         log.info(String.valueOf(result));
@@ -74,7 +74,7 @@ public class BulletinUserService {
     @Caching(
             put = {
                     @CachePut(key = "'id-bulletin:' + #result.id()", unless = "null == #result.id()"),
-                    @CachePut(key = "'id-user:'     + #result.userId()", unless = "null == #result.userId()")
+                    @CachePut(key = "'id-user:' + #result.userId()", unless = "null == #result.userId()")
             },
             evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
     )
@@ -83,15 +83,16 @@ public class BulletinUserService {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         mapper.update(entity, command);
-        var savedEntity = repository.save(entity.unaudited());
-        var result = mapper.from(savedEntity);
-        log.info(String.valueOf(savedEntity));
+        Set<PictureEntity> results = pictureRepository.findAllByIdIn(command.pictureIds());
+        entity.replacePictures(results);
+        var result = mapper.from(entity);
+        log.info(String.valueOf(entity));
         return result;
     }
 
     @Caching(evict = {
-            @CacheEvict(key = "'id-bulletin:'  + #result.id()"),
-            @CacheEvict(key = "'id-user:'      + #result.userId()"),
+            @CacheEvict(key = "'id-bulletin:' + #result.id()"),
+            @CacheEvict(key = "'id-user:' + #result.userId()"),
             @CacheEvict(key = "'id:bulletins:' + #result.id()"),
     })
     @Transactional(rollbackFor = Exception.class)

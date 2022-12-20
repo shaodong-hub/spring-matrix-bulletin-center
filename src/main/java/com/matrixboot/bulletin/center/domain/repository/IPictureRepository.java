@@ -1,6 +1,7 @@
 package com.matrixboot.bulletin.center.domain.repository;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
+import com.matrixboot.bulletin.center.infrastructure.common.value.PictureStatusValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
@@ -22,17 +23,17 @@ public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
      * @param status      status
      * @return count
      */
-    long deleteAllByCreatedDateBeforeAndStatusIs(LocalDateTime createdDate, int status);
+    long deleteAllByCreatedDateBeforeAndStatusIs(LocalDateTime createdDate, PictureStatusValue status);
 
     /**
      * findByIdAndUserIdAndStatus
      *
-     * @param id     id
-     * @param userId userId
-     * @param status status
+     * @param id        id
+     * @param createdBy userId
+     * @param status    status
      * @return Optional
      */
-    Optional<PictureEntity> findByIdAndCreatedByAndStatus(long id, long userId, int status);
+    Optional<PictureEntity> findByIdAndCreatedByAndStatus(Long id, Long createdBy, PictureStatusValue status);
 
     Set<PictureEntity> findAllByIdIn(Set<Long> ids);
 

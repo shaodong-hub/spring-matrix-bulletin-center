@@ -27,7 +27,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serial;
@@ -71,8 +70,7 @@ public class PictureEntity implements Serializable {
     @Column(name = "bulletin_id", insertable = false, updatable = false)
     private Long bulletinId;
 
-    @JoinColumn(name = "bulletin_id", referencedColumnName = "id")
-    @ManyToOne(targetEntity = BulletinInfoEntity.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = BulletinInfoEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JsonBackReference
     @ToString.Exclude
     private BulletinInfoEntity bulletin;
@@ -100,6 +98,12 @@ public class PictureEntity implements Serializable {
         return new PictureEntity();
     }
 
+    public void usedBy(BulletinInfoEntity entity) {
+        this.bulletin = entity;
+        this.status = PictureStatusValue.inUsed();
+    }
+
+
     public PictureEntity url(String url) {
         this.url = url;
         return this;
@@ -110,10 +114,14 @@ public class PictureEntity implements Serializable {
         return this;
     }
 
-    public PictureEntity inUsed() {
-        this.status = PictureStatusValue.inUsed();
+    public PictureEntity discarded() {
+        this.status = PictureStatusValue.discarded();
         return this;
     }
 
 
+    public PictureEntity inUsed() {
+        this.status = PictureStatusValue.inUsed();
+        return this;
+    }
 }

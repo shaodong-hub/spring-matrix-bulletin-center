@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -30,6 +31,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -38,8 +40,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -78,7 +80,8 @@ public class BulletinInfoEntity implements Serializable {
     @AttributeOverride(name = "status", column = @Column(columnDefinition = "TINYINT DEFAULT 0 COMMENT '状态'"))
     private BulletinStatusValue status;
 
-    @OneToMany(mappedBy = "bulletin", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "bulletin_id")
     @JsonManagedReference
     private Set<PictureEntity> pictures;
 
@@ -104,11 +107,13 @@ public class BulletinInfoEntity implements Serializable {
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '乐观锁'")
     private Long version;
 
-    public void addPictures(Set<PictureEntity> pictures) {
-        if (CollUtil.isEmpty(this.pictures)) {
-            this.pictures = new HashSet<>();
+    public void replacePictures(@NotNull Set<PictureEntity> pictures) {
+        if (CollUtil.isNotEmpty(this.pictures)) {
+            pictures.forEach(PictureEntity::discarded);
         }
-        this.pictures.addAll(pictures);
+        AtomicReference<BulletinInfoEntity> reference = new AtomicReference<>(this);
+        this.pictures = pictures;
+        pictures.forEach(picture -> picture.usedBy(reference.get()));
     }
 
     public BulletinInfoEntity unaudited() {

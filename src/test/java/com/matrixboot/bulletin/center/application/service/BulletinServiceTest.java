@@ -1,6 +1,7 @@
 package com.matrixboot.bulletin.center.application.service;
 
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
+import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
 import com.matrixboot.bulletin.common.core.UserInfo;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Assertions;
@@ -41,13 +42,20 @@ class BulletinServiceTest {
 
     @Test
     void create() {
-        var result = bulletinService.create(new BulletinCreateCommand("junit_title", "junit_content", Sets.set(1L, 2L, 3L)));
-        Assertions.assertEquals("junit_title", result.title());
-        Assertions.assertEquals("junit_content", result.content());
+        var title = "junit_title";
+        var content = "junit_content";
+        var result = bulletinService.create(new BulletinCreateCommand(title, content, Sets.set(1L, 2L, 3L)));
+        Assertions.assertEquals(title, result.title());
+        Assertions.assertEquals(content, result.content());
     }
 
     @Test
     void update() {
+        var title = "junit_update_title";
+        var content = "junit_update_content";
+        var result = bulletinService.update(new BulletinUpdateCommand(1L, title, content, Sets.set(10L, 8L, 9L)));
+        Assertions.assertEquals(title, result.title());
+        Assertions.assertEquals(content, result.content());
     }
 
     @Test
