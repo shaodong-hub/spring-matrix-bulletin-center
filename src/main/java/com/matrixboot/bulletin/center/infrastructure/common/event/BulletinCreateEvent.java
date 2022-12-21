@@ -10,5 +10,6 @@ import java.util.List;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinCreateEvent(Long bulletinId, Long createdBy, List<PictureEntity> pictures) {
+public record BulletinCreateEvent(Long bulletinId, Long createdBy,
+                                  List<PictureEntity> pictures) implements IBulletinEvent {
 }

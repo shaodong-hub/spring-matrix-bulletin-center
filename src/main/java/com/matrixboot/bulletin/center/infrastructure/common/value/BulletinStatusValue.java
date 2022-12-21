@@ -28,17 +28,22 @@ public class BulletinStatusValue implements Serializable {
     private Integer status;
 
     @Contract(" -> new")
+    public static @NotNull BulletinStatusValue closed() {
+        return new BulletinStatusValue(11);
+    }
+
+    @Contract(" -> new")
+    public static @NotNull BulletinStatusValue accepted() {
+        return new BulletinStatusValue(1);
+    }
+
+    @Contract(" -> new")
     public static @NotNull BulletinStatusValue unaudited() {
         return new BulletinStatusValue(0);
     }
 
     @Contract(" -> new")
-    public static @NotNull BulletinStatusValue audited() {
-        return new BulletinStatusValue(1);
-    }
-
-    @Contract(" -> new")
-    public static @NotNull BulletinStatusValue reject() {
+    public static @NotNull BulletinStatusValue rejected() {
         return new BulletinStatusValue(-1);
     }
 }

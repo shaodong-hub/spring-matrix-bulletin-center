@@ -2,7 +2,7 @@ package com.matrixboot.bulletin.center.infrastructure.common.event;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * create in 2022/11/29 23:31
@@ -10,5 +10,5 @@ import java.util.List;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinDeleteEvent(Long id, Long userId, List<PictureEntity> pictures) {
+public record BulletinDeleteEvent(Long id, Long createdBy, Set<PictureEntity> pictures) implements IBulletinEvent {
 }

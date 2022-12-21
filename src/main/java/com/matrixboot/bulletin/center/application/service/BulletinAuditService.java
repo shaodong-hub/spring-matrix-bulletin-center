@@ -28,9 +28,9 @@ public class BulletinAuditService {
     private final IEventBus eventBus;
 
     public void audit(@NotNull BulletinModifyEvent event) {
-        var entity = bulletinRepository.findById(event.id()).orElseThrow(() -> new BulletinNotFoundException(event.id()));
-        var result = auditService.doAudit(entity);
-        var bulletin = bulletinRepository.save(entity);
+        var transientBulletin = bulletinRepository.findById(event.id()).orElseThrow(() -> new BulletinNotFoundException(event.id()));
+        var result = auditService.doAudit(transientBulletin);
+        var bulletin = bulletinRepository.save(transientBulletin);
         log.info("{}", bulletin);
         eventBus.publishEvent(result);
     }

@@ -3,7 +3,7 @@ SET id               = 1,
     object_key       = 'k01',
     url              = 'https://k01',
     status           = 1,
-    bulletin_id      = 0,
+    bulletin_id      = 1,
     created_by       = 1,
     last_modified_by = 1;
 INSERT INTO picture
@@ -11,7 +11,7 @@ SET id               = 2,
     object_key       = 'k02',
     url              = 'https://k02',
     status           = 1,
-    bulletin_id      = 0,
+    bulletin_id      = 1,
     created_by       = 1,
     last_modified_by = 1;
 INSERT INTO picture

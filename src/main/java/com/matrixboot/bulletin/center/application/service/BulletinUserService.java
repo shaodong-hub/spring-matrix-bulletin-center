@@ -1,8 +1,8 @@
 package com.matrixboot.bulletin.center.application.service;
 
-import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import com.matrixboot.bulletin.center.domain.repository.IBulletinInfoRepository;
 import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
+import com.matrixboot.bulletin.center.domain.service.BulletinInitService;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 /**
  * create in 2022/11/28 23:59
@@ -41,6 +40,8 @@ import java.util.Set;
 public class BulletinUserService {
 
     private final IBulletinMapper mapper;
+
+    private final BulletinInitService initService;
 
     private final IBulletinInfoRepository repository;
 
@@ -61,12 +62,13 @@ public class BulletinUserService {
     )
     @Transactional(rollbackFor = Exception.class)
     public BulletinResult create(@Valid BulletinCreateCommand command) {
-        var bulletin = mapper.from(command);
-        var unSavedEntity = bulletin.initBulletin();
-        Set<PictureEntity> results = pictureRepository.findAllByIdIn(command.pictureIds());
-        unSavedEntity.replacePictures(results);
-        var savedEntity = repository.save(unSavedEntity);
-        var result = mapper.from(savedEntity);
+        var transientBulletin = mapper.from(command);
+        initService.initBulletin(transientBulletin);
+        var results = pictureRepository.findAllByIdIn(command.pictureIds());
+        log.info("填充图片信息 {} {}", command, results.size());
+        transientBulletin.updatePictures(results);
+        var persistBulletin = repository.save(transientBulletin);
+        var result = mapper.from(persistBulletin);
         log.info(String.valueOf(result));
         return result;
     }
@@ -81,26 +83,26 @@ public class BulletinUserService {
     @Transactional(rollbackFor = Exception.class)
     public BulletinResult update(@NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
-        var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
-        mapper.update(entity, command);
-        Set<PictureEntity> results = pictureRepository.findAllByIdIn(command.pictureIds());
-        entity.replacePictures(results);
-        var result = mapper.from(entity);
-        log.info(String.valueOf(entity));
+        var persistBulletin = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
+        mapper.update(persistBulletin, command);
+        var results = pictureRepository.findAllByIdIn(command.pictureIds());
+        persistBulletin.updatePictures(results);
+        var result = mapper.from(persistBulletin);
+        log.info(String.valueOf(persistBulletin));
         return result;
     }
 
     @Caching(evict = {
-            @CacheEvict(key = "'id-bulletin:' + #result.id()"),
-            @CacheEvict(key = "'id-user:' + #result.userId()"),
             @CacheEvict(key = "'id:bulletins:' + #result.id()"),
+            @CacheEvict(key = "'id-bulletin:' + #result.id()"),
+            @CacheEvict(key = "'id-user:' + #result.userId()")
     })
     @Transactional(rollbackFor = Exception.class)
     public BulletinResult delete(@NotNull @Valid BulletinDeleteCommand command) {
         var optional = repository.findById(command.id());
-        var entity = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
-        repository.delete(entity);
-        var result = mapper.from(entity);
+        var persistBulletin = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
+        persistBulletin.delete();
+        var result = mapper.from(persistBulletin);
         log.info(String.valueOf(result));
         return result;
     }
