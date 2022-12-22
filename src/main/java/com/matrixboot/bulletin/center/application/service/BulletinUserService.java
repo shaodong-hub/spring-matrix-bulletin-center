@@ -63,10 +63,10 @@ public class BulletinUserService {
     @Transactional(rollbackFor = Exception.class)
     public BulletinResult create(@Valid BulletinCreateCommand command) {
         var transientBulletin = mapper.from(command);
-        initService.initBulletin(transientBulletin);
         var results = pictureRepository.findAllByIdIn(command.pictureIds());
         log.info("填充图片信息 {} {}", command, results.size());
         transientBulletin.updatePictures(results);
+        initService.initBulletin(transientBulletin);
         var persistBulletin = repository.save(transientBulletin);
         var result = mapper.from(persistBulletin);
         log.info(String.valueOf(result));

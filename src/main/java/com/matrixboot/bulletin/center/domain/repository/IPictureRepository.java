@@ -35,6 +35,12 @@ public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
      */
     Optional<PictureEntity> findByIdAndCreatedByAndStatus(Long id, Long createdBy, PictureStatusValue status);
 
+    /**
+     * findAllByIdIn
+     *
+     * @param ids ids
+     * @return Set
+     */
     Set<PictureEntity> findAllByIdIn(Set<Long> ids);
 
 }

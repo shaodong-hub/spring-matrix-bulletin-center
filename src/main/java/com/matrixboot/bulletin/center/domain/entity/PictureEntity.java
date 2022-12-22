@@ -109,7 +109,7 @@ public class PictureEntity implements Serializable {
         return this;
     }
 
-    public PictureEntity defaultStatus() {
+    public PictureEntity unaudited() {
         this.status = PictureStatusValue.inReview();
         return this;
     }
