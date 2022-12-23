@@ -36,6 +36,15 @@ public interface IBulletinStatisticsRepository extends JpaRepository<BulletinSta
     void increaseView(@Param("id") long id);
 
     /**
+     * increaseView
+     *
+     * @param id id
+     */
+    @Modifying
+    @Query("UPDATE BulletinStatisticsEntity AS bulletin SET bulletin.like = (1 + bulletin.like) WHERE bulletin.id = :id")
+    void increaseLike(@Param("id") long id);
+
+    /**
      * increaseFavorite
      *
      * @param id id

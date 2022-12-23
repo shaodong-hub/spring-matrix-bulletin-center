@@ -50,6 +50,9 @@ public class BulletinStatisticsEntity {
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '查看次数'")
     private Long view;
 
+    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '点赞次数'")
+    private Long like;
+
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '收藏次数'")
     private Long favorite;
 

@@ -40,6 +40,11 @@ public class BulletinBiService {
     }
 
     @Async
+    public void increaseLike(@Valid @NotNull BulletinIdCommand command) {
+        repository.increaseLike(command.id());
+    }
+
+    @Async
     public void increaseFavorite(@Valid @NotNull BulletinIdCommand command) {
         repository.increaseFavorite(command.id());
     }
