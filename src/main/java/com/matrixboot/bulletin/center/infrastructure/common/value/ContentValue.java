@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -16,7 +15,6 @@ import java.io.Serializable;
  */
 
 @Getter
-@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentValue implements Serializable {

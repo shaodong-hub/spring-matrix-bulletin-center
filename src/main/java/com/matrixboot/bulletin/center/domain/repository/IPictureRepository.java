@@ -2,7 +2,7 @@ package com.matrixboot.bulletin.center.domain.repository;
 
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import com.matrixboot.bulletin.center.infrastructure.common.value.PictureStatusValue;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.Set;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
+public interface IPictureRepository extends MongoRepository<PictureEntity, String> {
 
     /**
      * deleteAllByCreatedDateBeforeAndStatusIs
@@ -33,7 +33,7 @@ public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
      * @param status    status
      * @return Optional
      */
-    Optional<PictureEntity> findByIdAndCreatedByAndStatus(Long id, Long createdBy, PictureStatusValue status);
+    Optional<PictureEntity> findByIdAndCreatedByAndStatus(String id, String createdBy, PictureStatusValue status);
 
     /**
      * findAllByIdIn
@@ -41,6 +41,6 @@ public interface IPictureRepository extends JpaRepository<PictureEntity, Long> {
      * @param ids ids
      * @return Set
      */
-    Set<PictureEntity> findAllByIdIn(Set<Long> ids);
+    Set<PictureEntity> findAllByIdIn(Set<String> ids);
 
 }

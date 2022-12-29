@@ -1,5 +1,6 @@
 package com.matrixboot.bulletin.center.application.service;
 
+import com.matrixboot.bulletin.center.domain.entity.MatrixUserInfo;
 import com.matrixboot.bulletin.center.domain.repository.IBulletinInfoRepository;
 import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
 import com.matrixboot.bulletin.center.domain.service.BulletinInitService;
@@ -9,7 +10,7 @@ import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpda
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
 import com.matrixboot.bulletin.center.infrastructure.exception.BulletinNotFoundException;
 import com.matrixboot.bulletin.center.infrastructure.mapper.IBulletinMapper;
-import com.matrixboot.bulletin.common.core.UserInfo;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +21,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 
 /**
  * create in 2022/11/28 23:59
@@ -47,21 +48,21 @@ public class BulletinUserService {
 
     private final IPictureRepository pictureRepository;
 
-    @Cacheable(key = "'bulletins-user:' + #userInfo.userId()")
-    public Page<BulletinResult> findCurrentBulletins(@NotNull UserInfo userInfo, Pageable pageable) {
-        log.info("findCurrentBulletins {}", userInfo.userId());
-        return repository.findAllByCreatedBy(userInfo.userId(), pageable);
+    @Cacheable(key = "'user-bulletins:' + #user.id()")
+    public Page<BulletinResult> findCurrentBulletins(@NotNull MatrixUserInfo user, Pageable pageable) {
+        log.info("findCurrentBulletins {}", user.id());
+        return repository.findAllByCreatedBy(user.id(), pageable);
     }
 
     @Caching(
             put = {
-                    @CachePut(key = "'id-bulletin:' + #result.id()", unless = "null == #result.id()"),
-                    @CachePut(key = "'id-user:' + #result.userId()", unless = "null == #result.userId()")
+                    @CachePut(key = "'bulletin:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'user:' + #result.userId()", unless = "null == #result.userId()")
             },
-            evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
+            evict = {@CacheEvict(key = "'user-bulletins:' + #result.userId()")}
     )
     @Transactional(rollbackFor = Exception.class)
-    public BulletinResult create(@Valid BulletinCreateCommand command) {
+    public BulletinResult create(MatrixUserInfo user, @Valid BulletinCreateCommand command) {
         var transientBulletin = mapper.from(command);
         var results = pictureRepository.findAllByIdIn(command.pictureIds());
         log.info("填充图片信息 {} {}", command, results.size());
@@ -75,13 +76,14 @@ public class BulletinUserService {
 
     @Caching(
             put = {
-                    @CachePut(key = "'id-bulletin:' + #result.id()", unless = "null == #result.id()"),
-                    @CachePut(key = "'id-user:' + #result.userId()", unless = "null == #result.userId()")
+                    @CachePut(key = "'bulletin:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'user:' + #result.userId()", unless = "null == #result.id()")
             },
-            evict = {@CacheEvict(key = "'bulletins-user:' + #result.id()")}
+            evict = {@CacheEvict(key = "'user-bulletins:' + #result.userId()")}
     )
+    @PreAuthorize("@check.hasBulletinAuthority(#user.id(), #command.id())")
     @Transactional(rollbackFor = Exception.class)
-    public BulletinResult update(@NotNull @Valid BulletinUpdateCommand command) {
+    public BulletinResult update(MatrixUserInfo user, @NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
         var persistBulletin = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         mapper.update(persistBulletin, command);
@@ -93,12 +95,13 @@ public class BulletinUserService {
     }
 
     @Caching(evict = {
-            @CacheEvict(key = "'id:bulletins:' + #result.id()"),
-            @CacheEvict(key = "'id-bulletin:' + #result.id()"),
-            @CacheEvict(key = "'id-user:' + #result.userId()")
+            @CacheEvict(key = "'bulletin:' + #result.id()"),
+            @CacheEvict(key = "'user:' + #result.userId()"),
+            @CacheEvict(key = "'user-bulletins:' + #result.userId()")
     })
+    @PreAuthorize("@check.hasBulletinAuthority(#user.id(), #command.id())")
     @Transactional(rollbackFor = Exception.class)
-    public BulletinResult delete(@NotNull @Valid BulletinDeleteCommand command) {
+    public BulletinResult delete(MatrixUserInfo user, @NotNull @Valid BulletinDeleteCommand command) {
         var optional = repository.findById(command.id());
         var persistBulletin = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         persistBulletin.delete();

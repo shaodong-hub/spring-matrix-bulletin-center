@@ -11,9 +11,9 @@ import lombok.Getter;
 public class PictureNotFoundException extends BulletinException {
 
     @Getter
-    private final Long id;
+    private final String id;
 
-    public PictureNotFoundException(Long id) {
+    public PictureNotFoundException(String id) {
         this.id = id;
     }
 }

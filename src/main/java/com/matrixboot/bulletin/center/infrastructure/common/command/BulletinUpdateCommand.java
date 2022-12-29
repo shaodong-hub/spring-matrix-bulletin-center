@@ -1,6 +1,7 @@
 package com.matrixboot.bulletin.center.infrastructure.common.command;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Set;
 
 /**
@@ -9,8 +10,8 @@ import java.util.Set;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinUpdateCommand(@NotNull Long id,
+public record BulletinUpdateCommand(@NotNull String id,
                                     String title,
                                     String content,
-                                    Set<Long> pictureIds) {
+                                    Set<String> pictureIds) {
 }

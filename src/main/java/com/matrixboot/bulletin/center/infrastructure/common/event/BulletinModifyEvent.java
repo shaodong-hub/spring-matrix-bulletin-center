@@ -11,7 +11,7 @@ import java.util.Set;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinModifyEvent(Long id, Long createdBy, Set<PictureEntity> pictures) implements IBulletinEvent {
+public record BulletinModifyEvent(String id, Long createdBy, Set<PictureEntity> pictures) implements IBulletinEvent {
 
 
     public boolean isNotEmpty() {

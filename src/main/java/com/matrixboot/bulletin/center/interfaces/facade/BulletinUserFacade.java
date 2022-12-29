@@ -1,17 +1,17 @@
 package com.matrixboot.bulletin.center.interfaces.facade;
 
 import com.matrixboot.bulletin.center.application.service.BulletinUserService;
+import com.matrixboot.bulletin.center.domain.entity.MatrixUserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinDeleteCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.BulletinUpdateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.result.BulletinResult;
 import com.matrixboot.bulletin.common.Result;
-import com.matrixboot.bulletin.common.annotation.AuthPrincipal;
-import com.matrixboot.bulletin.common.core.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,13 +34,13 @@ public class BulletinUserFacade {
     /**
      * 当前用户所有的帖子
      *
-     * @param userInfo UserInfo
+     * @param user     Matrixuser
      * @param pageable Pageable
      * @return Page
      */
     @GetMapping("/current/bulletins")
-    public Result<Page<BulletinResult>> findCurrentBulletins(@AuthPrincipal UserInfo userInfo, @PageableDefault Pageable pageable) {
-        return Result.success(service.findCurrentBulletins(userInfo, pageable));
+    public Result<Page<BulletinResult>> findCurrentBulletins(@AuthenticationPrincipal MatrixUserInfo user, @PageableDefault Pageable pageable) {
+        return Result.success(service.findCurrentBulletins(user, pageable));
     }
 
     /**
@@ -50,8 +50,8 @@ public class BulletinUserFacade {
      * @return BulletinResult
      */
     @PostMapping("/bulletin")
-    public Result<BulletinResult> create(@RequestBody BulletinCreateCommand command) {
-        return Result.success(service.create(command));
+    public Result<BulletinResult> create(@AuthenticationPrincipal MatrixUserInfo user, @RequestBody BulletinCreateCommand command) {
+        return Result.success(service.create(user, command));
     }
 
     /**
@@ -61,8 +61,8 @@ public class BulletinUserFacade {
      * @return BulletinResult
      */
     @PutMapping("/bulletin")
-    public Result<BulletinResult> update(@RequestBody BulletinUpdateCommand command) {
-        return Result.success(service.update(command));
+    public Result<BulletinResult> update(@AuthenticationPrincipal MatrixUserInfo user, @RequestBody BulletinUpdateCommand command) {
+        return Result.success(service.update(user, command));
     }
 
     /**
@@ -72,7 +72,7 @@ public class BulletinUserFacade {
      * @return BulletinResult
      */
     @DeleteMapping("/bulletin")
-    public Result<BulletinResult> delete(@RequestBody BulletinDeleteCommand command) {
-        return Result.success(service.delete(command));
+    public Result<BulletinResult> delete(@AuthenticationPrincipal MatrixUserInfo user, @RequestBody BulletinDeleteCommand command) {
+        return Result.success(service.delete(user, command));
     }
 }

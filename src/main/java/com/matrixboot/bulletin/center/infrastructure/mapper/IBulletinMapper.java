@@ -50,7 +50,6 @@ public interface IBulletinMapper {
     @Mapping(target = "pictures", ignore = true)
     @Mapping(target = "title", expression = "java(new TitleValue(command.title()))")
     @Mapping(target = "content", expression = "java(new ContentValue(command.content()))")
-//    @Mapping(target = "statistics", qualifiedByName = "InitStatistics")
     BulletinInfoEntity from(BulletinCreateCommand command);
 
     /**

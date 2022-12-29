@@ -3,8 +3,6 @@ package com.matrixboot.bulletin.center.domain.service.impl;
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
 import com.matrixboot.bulletin.center.domain.service.IPictureHoldService;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
-import com.matrixboot.bulletin.common.core.UserInfo;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class PictureOssServiceImpl implements IPictureHoldService {
 
     @Override
-    public PictureEntity preserve(@NotNull UserInfo userInfo, PictureCreateCommand command) {
+    public PictureEntity preserve(PictureCreateCommand command) {
         return PictureEntity.defaultPicture();
     }
 

@@ -1,12 +1,12 @@
 package com.matrixboot.bulletin.center.infrastructure.common.value;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.Embeddable;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -23,7 +23,6 @@ import static com.matrixboot.bulletin.center.infrastructure.common.PictureConsta
  * @version 0.0.1
  */
 @Getter
-@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 public class PictureStatusValue implements Serializable {

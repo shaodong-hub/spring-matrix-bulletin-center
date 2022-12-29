@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -15,7 +14,6 @@ import java.io.Serializable;
  * @version 0.0.1
  */
 @Getter
-@Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserIdValue implements Serializable {

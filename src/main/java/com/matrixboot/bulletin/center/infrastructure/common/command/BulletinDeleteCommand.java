@@ -1,6 +1,7 @@
 package com.matrixboot.bulletin.center.infrastructure.common.command;
 
-import javax.validation.constraints.NotNull;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * create in 2022/11/29 22:56
@@ -8,5 +9,5 @@ import javax.validation.constraints.NotNull;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinDeleteCommand(@NotNull Long id) {
+public record BulletinDeleteCommand(@NotNull String id) {
 }

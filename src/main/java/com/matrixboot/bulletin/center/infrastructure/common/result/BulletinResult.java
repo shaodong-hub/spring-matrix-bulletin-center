@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinResult(Long id,
+public record BulletinResult(String id,
                              String userId,
                              String title,
                              String content,

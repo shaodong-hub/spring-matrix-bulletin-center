@@ -10,5 +10,5 @@ import java.util.Set;
  * @author shishaodong
  * @version 0.0.1
  */
-public record BulletinDeleteEvent(Long id, Long createdBy, Set<PictureEntity> pictures) implements IBulletinEvent {
+public record BulletinDeleteEvent(String id, Long createdBy, Set<PictureEntity> pictures) implements IBulletinEvent {
 }

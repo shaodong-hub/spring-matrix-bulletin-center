@@ -13,5 +13,5 @@ import java.util.Set;
  */
 public record BulletinCreateCommand(@Length(min = 1, max = 20) String title,
                                     @Length(min = 1, max = 200) String content,
-                                    Set<Long> pictureIds) {
+                                    Set<String> pictureIds) {
 }
