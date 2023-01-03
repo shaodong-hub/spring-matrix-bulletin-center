@@ -50,8 +50,8 @@ public class BulletinUserFacade {
      * @return BulletinResult
      */
     @PostMapping("/bulletin")
-    public Result<BulletinResult> create(@AuthenticationPrincipal MatrixUserInfo user, @RequestBody BulletinCreateCommand command) {
-        return Result.success(service.create(user, command));
+    public Result<BulletinResult> create(@RequestBody BulletinCreateCommand command) {
+        return Result.success(service.create(command));
     }
 
     /**

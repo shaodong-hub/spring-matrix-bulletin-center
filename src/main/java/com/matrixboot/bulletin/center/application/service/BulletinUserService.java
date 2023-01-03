@@ -1,5 +1,6 @@
 package com.matrixboot.bulletin.center.application.service;
 
+import com.matrixboot.bulletin.center.domain.entity.BulletinInfoEntity;
 import com.matrixboot.bulletin.center.domain.entity.MatrixUserInfo;
 import com.matrixboot.bulletin.center.domain.repository.IBulletinInfoRepository;
 import com.matrixboot.bulletin.center.domain.repository.IPictureRepository;
@@ -23,7 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 
@@ -61,17 +61,13 @@ public class BulletinUserService {
             },
             evict = {@CacheEvict(key = "'user-bulletins:' + #result.userId()")}
     )
-    @Transactional(rollbackFor = Exception.class)
-    public BulletinResult create(MatrixUserInfo user, @Valid BulletinCreateCommand command) {
+    public BulletinResult create(@Valid BulletinCreateCommand command) {
         var transientBulletin = mapper.from(command);
-        var results = pictureRepository.findAllByIdIn(command.pictureIds());
-        log.info("填充图片信息 {} {}", command, results.size());
-        transientBulletin.updatePictures(results);
+        transientBulletin.updatePictures(pictureRepository.findAllByIdIn(command.pictureIds()));
+        log.info("填充图片信息 {}", command);
         initService.initBulletin(transientBulletin);
         var persistBulletin = repository.save(transientBulletin);
-        var result = mapper.from(persistBulletin);
-        log.info(String.valueOf(result));
-        return result;
+        return mapper.from(persistBulletin);
     }
 
     @Caching(
@@ -82,31 +78,32 @@ public class BulletinUserService {
             evict = {@CacheEvict(key = "'user-bulletins:' + #result.userId()")}
     )
     @PreAuthorize("@check.hasBulletinAuthority(#user.id(), #command.id())")
-    @Transactional(rollbackFor = Exception.class)
     public BulletinResult update(MatrixUserInfo user, @NotNull @Valid BulletinUpdateCommand command) {
         var optional = repository.findById(command.id());
         var persistBulletin = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
         mapper.update(persistBulletin, command);
         var results = pictureRepository.findAllByIdIn(command.pictureIds());
         persistBulletin.updatePictures(results);
-        var result = mapper.from(persistBulletin);
-        log.info(String.valueOf(persistBulletin));
-        return result;
+        BulletinInfoEntity infoEntity = repository.save(persistBulletin);
+        return mapper.from(infoEntity);
     }
 
     @Caching(evict = {
             @CacheEvict(key = "'bulletin:' + #result.id()"),
             @CacheEvict(key = "'user:' + #result.userId()"),
-            @CacheEvict(key = "'user-bulletins:' + #result.userId()")
+            @CacheEvict(key = "'user-bulletins:' + #result.userId()"),
+            @CacheEvict(key = "'user-bulletin:' + #result.userId() + ':' + #result.id()")
     })
     @PreAuthorize("@check.hasBulletinAuthority(#user.id(), #command.id())")
-    @Transactional(rollbackFor = Exception.class)
     public BulletinResult delete(MatrixUserInfo user, @NotNull @Valid BulletinDeleteCommand command) {
         var optional = repository.findById(command.id());
         var persistBulletin = optional.orElseThrow(() -> new BulletinNotFoundException(command.id()));
-        persistBulletin.delete();
-        var result = mapper.from(persistBulletin);
-        log.info(String.valueOf(result));
-        return result;
+        repository.save(persistBulletin.softDelete());
+        return mapper.from(persistBulletin);
+    }
+
+    @Cacheable(key = "'user-bulletin:' + #userId + ':' + #bulletinId")
+    public boolean existsByUserIdAndBulletinId(String userId, String bulletinId) {
+        return repository.existsByCreatedByAndId(userId, bulletinId);
     }
 }

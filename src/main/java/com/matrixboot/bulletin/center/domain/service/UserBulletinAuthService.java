@@ -1,5 +1,8 @@
 package com.matrixboot.bulletin.center.domain.service;
 
+import com.matrixboot.bulletin.center.application.service.BulletinPictureService;
+import com.matrixboot.bulletin.center.application.service.BulletinUserService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +17,22 @@ import org.springframework.stereotype.Service;
 @Service("check")
 public class UserBulletinAuthService {
 
+    @Resource
+    private BulletinUserService bulletinUserService;
+
+    @Resource
+    private BulletinPictureService bulletinPictureService;
+
+
     public boolean hasBulletinAuthority(String userId, String bulletinId) {
-        log.info("hasBulletinAuthority {} {}", userId, bulletinId);
-        return true;
+        boolean exists = bulletinUserService.existsByUserIdAndBulletinId(userId, bulletinId);
+        log.info("hasBulletinAuthority {} {} {}", exists, userId, bulletinId);
+        return exists;
     }
 
+    public boolean hasPictureAuthority(String userId, String pictureId) {
+        boolean exists = bulletinPictureService.existsByUserIdAndPictureId(userId, pictureId);
+        log.info("hasPictureAuthority {} {} {}", exists, userId, pictureId);
+        return exists;
+    }
 }

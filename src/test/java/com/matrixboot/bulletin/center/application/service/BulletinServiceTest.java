@@ -20,6 +20,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -47,7 +48,7 @@ class BulletinServiceTest {
     @Resource
     private BulletinUserService bulletinService;
 
-    @Resource
+    @SpyBean
     private IBulletinInfoRepository bulletinInfoRepository;
 
     @Resource
@@ -85,7 +86,7 @@ class BulletinServiceTest {
     void create() {
         var title = "junit_title";
         var content = "junit_content";
-        var result = bulletinService.create(new MatrixUserInfo("1"), new BulletinCreateCommand(title, content, Sets.set("1", "2", "3")));
+        var result = bulletinService.create(new BulletinCreateCommand(title, content, Sets.set("1", "2", "3")));
         Assertions.assertEquals(title, result.title());
         Assertions.assertEquals(content, result.content());
     }
@@ -96,9 +97,10 @@ class BulletinServiceTest {
     void update() {
         var title = "junit_update_title";
         var content = "junit_update_content";
-        var result = bulletinService.update(new MatrixUserInfo("1"), new BulletinUpdateCommand("1", title, content, Sets.set("10", "9", "8")));
-        Assertions.assertEquals(title, result.title());
-        Assertions.assertEquals(content, result.content());
+        var result1 = bulletinService.update(new MatrixUserInfo("1"), new BulletinUpdateCommand("1", title, content, Sets.set("10", "9", "8")));
+        var result2 = bulletinService.update(new MatrixUserInfo("1"), new BulletinUpdateCommand("1", title, content, Sets.set("10", "9", "8")));
+        Assertions.assertEquals(title, result1.title());
+        Assertions.assertEquals(content, result1.content());
     }
 
     @Order(4)

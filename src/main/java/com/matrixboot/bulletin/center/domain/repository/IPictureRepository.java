@@ -43,4 +43,14 @@ public interface IPictureRepository extends MongoRepository<PictureEntity, Strin
      */
     Set<PictureEntity> findAllByIdIn(Set<String> ids);
 
+
+    /**
+     * existsByCreatedByAndId
+     *
+     * @param createdBy createdBy
+     * @param id        id
+     * @return boolean
+     */
+    boolean existsByCreatedByAndId(String createdBy, String id);
+
 }

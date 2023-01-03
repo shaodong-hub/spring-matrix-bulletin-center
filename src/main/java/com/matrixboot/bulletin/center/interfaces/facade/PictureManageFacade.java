@@ -1,6 +1,6 @@
 package com.matrixboot.bulletin.center.interfaces.facade;
 
-import com.matrixboot.bulletin.center.application.service.PictureService;
+import com.matrixboot.bulletin.center.application.service.BulletinPictureService;
 import com.matrixboot.bulletin.center.domain.entity.MatrixUserInfo;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureCreateCommand;
 import com.matrixboot.bulletin.center.infrastructure.common.command.PictureDeleteCommand;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PictureManageFacade {
 
-    private final PictureService service;
+    private final BulletinPictureService service;
 
     /**
      * 上传图片

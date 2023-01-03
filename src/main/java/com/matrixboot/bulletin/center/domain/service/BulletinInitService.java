@@ -2,6 +2,7 @@ package com.matrixboot.bulletin.center.domain.service;
 
 import com.matrixboot.bulletin.center.domain.entity.BulletinInfoEntity;
 import com.matrixboot.bulletin.center.domain.entity.PictureEntity;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
  * @version 0.0.1
  */
 @Service
+@RequiredArgsConstructor
 public class BulletinInitService {
+
 
     public void initBulletin(@NotNull BulletinInfoEntity bulletin) {
         bulletin.unaudited();

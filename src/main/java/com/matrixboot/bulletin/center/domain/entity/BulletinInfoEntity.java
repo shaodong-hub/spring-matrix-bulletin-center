@@ -18,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -41,6 +42,7 @@ import java.util.Set;
 @ToString
 @AggregateRoot
 @Document(collection = "bulletin")
+@TypeAlias("bulletin")
 public class BulletinInfoEntity implements Serializable {
 
     @Serial
@@ -59,10 +61,10 @@ public class BulletinInfoEntity implements Serializable {
     private BulletinStatusValue status;
 
     @CreatedBy
-    private Long createdBy;
+    private String createdBy;
 
     @LastModifiedBy
-    private Long lastModifiedBy;
+    private String lastModifiedBy;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -95,8 +97,9 @@ public class BulletinInfoEntity implements Serializable {
         }
     }
 
-    public void delete() {
+    public BulletinInfoEntity softDelete() {
         this.deleted = true;
+        return this;
     }
 
     public boolean isAudited() {

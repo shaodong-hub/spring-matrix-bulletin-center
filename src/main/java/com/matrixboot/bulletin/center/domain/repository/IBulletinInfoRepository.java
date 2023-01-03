@@ -23,5 +23,13 @@ public interface IBulletinInfoRepository extends MongoRepository<BulletinInfoEnt
      */
     <T> Page<T> findAllByCreatedBy(String createdBy, Pageable pageable);
 
+    /**
+     * existsByCreatedByAndId
+     *
+     * @param createdBy createdBy
+     * @param id        id
+     * @return boolean
+     */
+    boolean existsByCreatedByAndId(String createdBy, String id);
 
 }

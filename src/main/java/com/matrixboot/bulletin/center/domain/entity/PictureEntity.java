@@ -15,6 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
@@ -33,6 +34,7 @@ import java.time.LocalDateTime;
 @AggregateRoot
 @EqualsAndHashCode
 @Document(collection = "picture")
+@TypeAlias("picture")
 public class PictureEntity implements Serializable {
 
     @Serial
@@ -56,10 +58,10 @@ public class PictureEntity implements Serializable {
     private BulletinInfoEntity bulletin;
 
     @CreatedBy
-    private Long createdBy;
+    private String createdBy;
 
     @LastModifiedBy
-    private Long lastModifiedBy;
+    private String lastModifiedBy;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

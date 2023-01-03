@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @CacheConfig(cacheNames = "manage")
-public class PictureService {
+public class BulletinPictureService {
 
     private final IPictureMapper mapper;
 
@@ -44,13 +46,21 @@ public class PictureService {
         return mapper.from(entity);
     }
 
-    @CacheEvict(key = "'picture:' + #user.id() + ':' + #result.id()")
-    @PreAuthorize("@check.hasBulletinAuthority(#user.id(), #command.id())")
+    @Caching(evict = {
+            @CacheEvict(key = "'picture:' + #user.id() + ':' + #result.id()"),
+            @CacheEvict(key = "'user-picture:' + #user.id() + ':' + #result.id()"),
+    })
+    @PreAuthorize("@check.hasPictureAuthority(#user.id(), #command.id())")
     public PictureResult deletePicture(@NotNull MatrixUserInfo user, @NotNull PictureDeleteCommand command) {
         var optional = repository.findByIdAndCreatedByAndStatus(command.id(), user.id(), PictureStatusValue.discarded());
         var entity = optional.orElseThrow(() -> new PictureNotFoundException(command.id()));
         repository.delete(entity);
         return mapper.from(entity);
+    }
+
+    @Cacheable(key = "'user-picture:' + #userId + ':' + #pictureId")
+    public boolean existsByUserIdAndPictureId(String userId, String pictureId) {
+        return repository.existsByCreatedByAndId(userId, pictureId);
     }
 
     /**
